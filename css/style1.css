@@ -107,3 +107,21 @@ img {
 .nav-list a:hover {
   background: var(--main-blue);
 }
+
+/* Welkom section */
+
+.welkom-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+}
+
+.welkom-section > p {
+  font-size: 3rem;
+  font-weight: 200;
+  font-style: italic;
+  color: var(--main-red);
+}

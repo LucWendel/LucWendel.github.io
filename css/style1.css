@@ -2,7 +2,7 @@
 :root {
   --main-white: #f0f0f0;
   --main-blue: #317cbe;
-  --main-red: #942b2b;
+  --main-image: https://images.unsplash.com/photo-1677760179017-4862f5114d48?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1344&q=80;
   --main-gray: #303841;
 }
 
@@ -169,7 +169,7 @@ img {
 .projects-section {
   text-align: center;
   padding: 10rem 2rem;
-  background: var(--main-blue);
+  background: var(--main-image);
 }
 
 .projects-section-header {

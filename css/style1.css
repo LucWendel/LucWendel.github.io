@@ -5,16 +5,7 @@ body,html{
 body{
   margin:0;
   padding:0;
-  
-  background: linear-gradient(270deg, #333, #1f82c9, #1f38c9);
-  background-size: 300% 300%;
-  animation: background 20s ease infinite;
-}
-
-@keyframes background {
-    0%{background-position:0% 51%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 51%}
+  background:#29b6f6;
 }
 .bubbles{
   position:absolute;

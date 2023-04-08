@@ -1,8 +1,8 @@
 /* Custom properties/variables  */
 :root {
   --main-white: #f0f0f0;
-  --main-blue: #317cbe;
-  --main-red: #942b2b;
+  --main-red: #be3144;
+  --main-blue: #45567d;
   --main-gray: #303841;
 }
 
@@ -153,8 +153,8 @@ img {
   align-items: center;
   width: 100%;
   height: 100vh;
-  color: rgb(0,0,0);
-  color: linear-gradient(90deg, rgba(0,0,0,0.7120098039215687) 0%, rgba(108,108,108,0.6167717086834734) 35%, rgba(255,255,255,1) 100%);
+  background-color: #000;
+  background-image: linear-gradient(62deg, #3a3d40 0%, #181719 100%);
 }
 
 .welcome-section > p {

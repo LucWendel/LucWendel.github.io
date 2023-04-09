@@ -1,175 +1,333 @@
-body{
-    height: 100%;
-    width: 98%;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    position: relative;
-    z-index: 1;
-    background: linear-gradient(270deg, #333, #1f82c9, #1f38c9);
-    background-size: 300% 300%;
-
-    animation: background 20s ease infinite;
+/* Custom properties/variables  */
+:root {
+  --main-white: #f0f0f0;
+  --main-blue: #317cbe;
+  --main-image: https://images.unsplash.com/photo-1677760179017-4862f5114d48?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1344&q=80;
+  --main-gray: #303841;
 }
 
-@keyframes background {
-    0%{background-position:0% 51%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 51%}
-}
-
-
-header{
-    height: 10%;
-    width: 100%;
-}
-
-main{
-    height: 80%;
-    width: 100%;
-}
-
-footer{
-    width: 100%;
-}
-
-#navbar {
-  list-style-type: none;
+/* Base reset */
+* {
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  background-color: #333;
 }
 
-h1{
-    color: white;
-    text-align: center;
+/* box-sizing and font sizing */
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
+html {
+  box-sizing: border-box;
 
-.blok {
-  display: inline-block;
-  text-align: left;
-  border-right:1px solid #bbb;
+  /* Set font size for easy rem calculations
+   * default document font size = 16px, 1rem = 16px, 100% = 16px
+   * (100% / 16px) * 10 = 62.5%, 1rem = 10px, 62.5% = 10px
+  */
+  font-size: 62.5%;
+  scroll-behavior: smooth;
 }
 
-.blok:last-child {
-  border-right: none;
+/* A few media query to set some font sizes at different screen sizes.
+ * This helps automate a bit of responsiveness.
+ * The trick is to use the rem unit for size values, margin and padding.
+ * Because rem is relative to the document font size
+ * when we scale up or down the font size on the document
+ * it will affect all properties using rem units for the values.
+*/
+
+/* I am using the em unit for breakpoints
+ * The calculation is the following
+ * screen size divided by browser base font size
+ * As an example: a breakpoint at 980px
+ * 980px / 16px = 61.25em
+*/
+
+/* 1200px / 16px = 75em */
+@media (max-width: 75em) {
+  html {
+    font-size: 60%;
+  }
 }
 
-.blok a {
-  display: block;
-  color: white;
+/* 980px / 16px = 61.25em */
+@media (max-width: 61.25em) {
+  html {
+    font-size: 58%;
+  }
+}
+
+/* 460px / 16px = 28.75em */
+@media (max-width: 28.75em) {
+  html {
+    font-size: 55%;
+  }
+}
+
+/* Base styles */
+
+body {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.8rem; /* 18px */
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--main-white);
+}
+
+h1,
+h2 {
+  font-family: "Raleway", sans-serif;
+  font-weight: 700;
   text-align: center;
-  padding: 14px 16px;
+}
+
+h1 {
+  font-size: 6rem;
+}
+
+h2 {
+  font-size: 4.2rem;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
   text-decoration: none;
+  color: var(--main-white);
 }
 
-.blok a:hover:not(.active) {
-  background-color: #111;
+img {
+  display: block;
+  width: 100%;
 }
 
-.bubbles{
-    position: absolute;
-    top: 489px;
-    left: 0;
-    width: 97%;
-    height: 80%;
-    z-index: -1;
-    transform: translateZ(0);
+/* nav */
+
+.nav {
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--main-blue);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+  z-index: 10;
 }
 
-.bubbles li{
-    position: absolute;
-    list-style: none;
-    display: block;
-    background-color: #67a4ff;
-    bottom: -100px;
-    animation: square 20s infinite;
-    transition-timing-function: linear;
+.nav-list {
+  display: flex;
+  margin-right: 2rem;
 }
 
-.bubbles li:nth-child(1){
-    width: 40px;
-    height: 40px;
-    left: 20%;
+@media (max-width: 28.75em) {
+  .nav {
+    justify-content: center;
+  }
+
+  .nav-list {
+    margin: 0 1rem;
+  }
 }
 
-.bubbles li:nth-child(2){
-    width: 60px;
-    height: 60px;
-    left: 30%;
-    animation-delay: 2s;
-    animation-duration: 17s;
+.nav-list a {
+  display: block;
+  font-size: 2.2rem;
+  padding: 2rem;
 }
 
-.bubbles li:nth-child(3){
-    width: 10px;
-    height: 10px;
-    left: 46;
-    animation-delay: 4s;
-    animation-duration: 13s;
+.nav-list a:hover {
+  background: var(--main-blue);
 }
 
-.bubbles li:nth-child(4){
-    width: 80px;
-    height: 80px;
-    left: 80%;
-    animation-delay: 1s;
-    animation-duration: 22s;
+/* Welcome section */
+
+.welcome-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  color: rgb(0,0,0);
+  color: linear-gradient(90deg, rgba(0,0,0,0.7120098039215687) 0%, rgba(108,108,108,0.6167717086834734) 35%, rgba(255,255,255,1) 100%);
 }
 
-.bubbles li:nth-child(5){
-    width: 50px;
-    height: 50px;
-    left: 50%;
-    animation-delay: 7s;
-    animation-duration: 12s;
+.welcome-section > p {
+  font-size: 3rem;
+  font-weight: 200;
+  font-style: italic;
+  color: var(--main-red);
 }
 
-.bubbles li:nth-child(6){
-    width: 33px;
-    height: 33px;
-    left: 45%;
-    animation-delay: 4s;
-    animation-duration: 19s;
+/* Projects section */
+
+.projects-section {
+  text-align: center;
+  padding: 10rem 2rem;
+  background: var(--main-image);
 }
 
-.bubbles li:nth-child(7){
-    width: 60px;
-    height: 60px;
-    left: 10%;
-    animation-delay: 10s;
-    animation-duration: 24s;
+.projects-section-header {
+  max-width: 640px;
+  margin: 0 auto 6rem auto;
+  border-bottom: 0.2rem solid var(--main-gray);
+  color: var(--main-gray);
 }
 
-.bubbles li:nth-child(8){
-    width: 75px;
-    height: 75px;
-    left: 65%;
-    animation-delay: 19s;
-    animation-duration: 14s;
+@media (max-width: 28.75em) {
+  .projects-section-header {
+    font-size: 4rem;
+      color: var(--main-gray);
+  }
 }
 
-.bubbles li:nth-child(9){
-    width: 25px;
-    height: 25px;
-    left: 95%;
-    animation-delay: 20s;
-    animation-duration: 12s;
+/* "Automagic" image grid using no media queries */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-gap: 4rem;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  margin-bottom: 6rem;
 }
 
-.bubbles li:nth-child(10){
-    width: 27px;
-    height: 27px;
-    left: 88%;
-    animation-delay: 14s;
-    animation-duration: 6s;
+@media (max-width: 30.625em) {
+  .projects-section {
+    padding: 6rem 1rem;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-@keyframes square{
-    0% {
-        transform: translateY(o);
-    }
-    100% {
-        transform: translateY(-1080px) rotate(630deg)
-    }
+.project {
+  background: var(--main-gray);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
+}
+
+.code {
+  color: var(--main-gray);
+  transition: color 0.3s ease-out;
+}
+
+.project:hover .code {
+  color: #ff7f50;
+}
+
+.project-image {
+  height: calc(100% - 6.8rem);
+  width: 100%;
+  object-fit: cover;
+}
+
+.project-title {
+  font-size: 2rem;
+  padding: 2rem 0.5rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 1rem 2rem;
+  border-radius: 2px;
+}
+
+.btn-show-all {
+  font-size: 2rem;
+  background: var(--main-gray);
+  transition: background 0.3s ease-out;
+}
+
+.btn-show-all:hover {
+  background: var(--main-red);
+}
+
+.btn-show-all:hover > i {
+  transform: translateX(2px);
+}
+
+.btn-show-all > i {
+  margin-left: 10px;
+  transform: translateX(0);
+  transition: transform 0.3s ease-out;
+}
+
+/* Contact section */
+
+.contact-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 80vh;
+  padding: 0 2rem;
+  background: var(--main-gray);
+}
+
+.contact-section-header > h2 {
+  font-size: 6rem;
+}
+
+@media (max-width: 28.75em) {
+  .contact-section-header > h2 {
+    font-size: 4rem;
+  }
+}
+
+.contact-section-header > p {
+  font-style: italic;
+}
+
+.contact-links {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 980px;
+  margin-top: 4rem;
+  flex-wrap: wrap;
+}
+
+.contact-details {
+  font-size: 2.4rem;
+  text-shadow: 2px 2px 1px #1f1f1f;
+  transition: transform 0.3s ease-out;
+}
+
+.contact-details:hover {
+  transform: translateY(8px);
+}
+
+/* Footer */
+
+footer {
+  font-weight: 300;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 2rem;
+  background: var(--main-gray);
+  border-top: 4px solid var(--main-red);
+}
+
+footer > p {
+  margin: 2rem;
+}
+
+footer i {
+  vertical-align: middle;
+}
+
+@media (max-width: 28.75em) {
+  footer {
+    flex-direction: column;
+    text-align: center;
+  }
 }

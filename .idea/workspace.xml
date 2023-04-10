@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="edea3d94-0953-4ab4-9804-9299cd65a7c6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/js/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/bubbels.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/bubbels.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/style1.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style1.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -42,10 +41,11 @@
       <recent name="C:\coding\test\LucWendel.github.io\css\oud" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\coding\test\LucWendel.github.io\oud" />
+      <recent name="C:\coding\test\LucWendel.github.io\project1" />
+      <recent name="C:\coding\test\LucWendel.github.io\js" />
       <recent name="C:\coding\test\LucWendel.github.io" />
+      <recent name="C:\coding\test\LucWendel.github.io\oud" />
       <recent name="C:\coding\test\LucWendel.github.io\css\oud" />
-      <recent name="C:\coding\test\LucWendel.github.io\img\bs" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

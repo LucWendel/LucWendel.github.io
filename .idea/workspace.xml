@@ -5,36 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="edea3d94-0953-4ab4-9804-9299cd65a7c6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/projecten/project2/project2.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/projecten/project1/project1.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/debug.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/img/chesspieces/wikipedia/bB.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/img/chesspieces/wikipedia/bK.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/img/chesspieces/wikipedia/bN.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/img/chesspieces/wikipedia/bP.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/img/chesspieces/wikipedia/bQ.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/img/chesspieces/wikipedia/bR.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/img/chesspieces/wikipedia/wB.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/img/chesspieces/wikipedia/wK.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/img/chesspieces/wikipedia/wN.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/img/chesspieces/wikipedia/wP.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/img/chesspieces/wikipedia/wQ.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/img/chesspieces/wikipedia/wR.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/lib/chessboardjs/LICENSE.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/lib/chessboardjs/css/chessboard-0.3.0.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/lib/chessboardjs/css/chessboard-0.3.0.min.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/lib/chessboardjs/js/chess.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/lib/chessboardjs/js/chessboard-0.3.0.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/lib/chessboardjs/js/chessboard-0.3.0.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/lib/jquery/jquery-3.2.1.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/lib/js/chess.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/script.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projecten/project1/project1.html" beforeDir="false" afterPath="$PROJECT_DIR$/projecten/project1/project1.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

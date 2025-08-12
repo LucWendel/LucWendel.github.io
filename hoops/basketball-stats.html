@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏀 Basketball Stats Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f97316 5%, #92400e 95%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #92400e;
+        }
+
+        .button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .button-primary {
+            background: #f97316;
+            color: white;
+        }
+
+        .button-primary:hover {
+            background: #ea580c;
+        }
+
+        .button-primary:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .button-outline {
+            background: transparent;
+            color: #f97316;
+            border: 2px solid #f97316;
+        }
+
+        .button-outline:hover {
+            background: #f97316;
+            color: white;
+        }
+
+        .input {
+            padding: 0.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #f97316;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(249, 115, 22, 0.2);
+            color: #92400e;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grid-cols-5 {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-cols-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .text-xs {
+            font-size: 0.75rem;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .font-medium {
+            font-weight: 500;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .space-y-4 > * + * {
+            margin-top: 1rem;
+        }
+
+        .space-y-2 > * + * {
+            margin-top: 0.5rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .gap-1 {
+            gap: 0.25rem;
+        }
+
+        .w-20 {
+            width: 5rem;
+        }
+
+        .w-6 {
+            width: 1.5rem;
+        }
+
+        .w-5 {
+            width: 1.25rem;
+        }
+
+        .h-5 {
+            height: 1.25rem;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .rounded {
+            border-radius: 6px;
+        }
+
+        .capitalize {
+            text-transform: capitalize;
+        }
+
+        .player-header {
+            background: #f97316;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-button {
+            width: 1.25rem;
+            height: 1.25rem;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .stat-button-minus {
+            background: #dc2626;
+        }
+
+        .stat-button-plus-good {
+            background: #16a34a;
+        }
+
+        .stat-button-plus-bad {
+            background: #eab308;
+        }
+
+        .setup-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 0;
+        }
+
+        .player-name {
+            width: 5rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .number-input {
+            width: 5rem;
+            padding: 0.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+        }
+
+        .select {
+            padding: 0.25rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .bench-player {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-value {
+            width: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .grid-cols-5 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            .card-header, .card-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Setup Screen -->
+        <div id="setupScreen" class="text-center mb-8">
+            <h1 style="font-size: 2.5rem; font-weight: bold; color: white; margin-bottom: 0.5rem;">🏀 Basketball Stats</h1>
+            <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem;">Geef je spelers rugnummers</p>
+            
+            <div class="card" style="border: 2px solid rgba(249, 115, 22, 0.3);">
+                <div class="card-header">
+                    <h2 class="card-title">Team Setup</h2>
+                </div>
+                <div class="card-content space-y-4">
+                    <div id="playerSetup"></div>
+                    
+                    <button id="startGameBtn" class="button button-primary w-full" disabled>
+                        🏀 WEDSTRIJD STARTEN
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" style="display: none;">
+            <div class="text-center mb-4">
+                <h1 style="font-size: 1.5rem; font-weight: bold; color: white;">🏀 Live Game Stats</h1>
+            </div>
+
+            <!-- Active Players -->
+            <div id="activePlayers" class="grid grid-cols-5 gap-2 mb-6"></div>
+
+            <!-- Bench Players -->
+            <div id="benchSection" class="card" style="border: 2px solid rgba(146, 64, 14, 0.3); display: none;">
+                <div class="card-header">
+                    <h2 class="card-title text-center">Bank Spelers</h2>
+                </div>
+                <div class="card-content">
+                    <div id="benchPlayers" class="grid grid-cols-4 gap-2"></div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button id="backToSetupBtn" class="button button-outline">
+                    Terug naar Setup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TEAM_PLAYERS = ["wendel", "lucas", "chris-jan", "nelis", "váál", "géér", "stef", "jupspip", "tyg"];
+        
+        let gameStarted = false;
+        let players = TEAM_PLAYERS.map(name => ({
+            name,
+            number: "",
+            stats: {
+                twoPointers: 0,
+                threePointers: 0,
+                rebounds: 0,
+                assists: 0,
+                misses: 0,
+                turnovers: 0,
+                blocks: 0,
+                steals: 0,
+                fouls: 0,
+            }
+        }));
+        let activePlayers = [0, 1, 2, 3, 4];
+
+        function updatePlayerNumber(index, number) {
+            players[index].number = number;
+            checkCanStartGame();
+        }
+
+        function updateStat(playerIndex, stat, increment = true) {
+            const newValue = players[playerIndex].stats[stat] + (increment ? 1 : -1);
+            players[playerIndex].stats[stat] = Math.max(0, newValue);
+            renderGameScreen();
+        }
+
+        function swapPlayer(activeIndex, benchIndex) {
+            const activePlayerIndex = activePlayers.findIndex(index => index === activeIndex);
+            if (activePlayerIndex !== -1) {
+                activePlayers[activePlayerIndex] = benchIndex;
+                renderGameScreen();
+            }
+        }
+
+        function checkCanStartGame() {
+            const canStart = players.slice(0, 5).every(player => player.number.trim() !== "");
+            document.getElementById('startGameBtn').disabled = !canStart;
+        }
+
+        function renderSetupScreen() {
+            const setupDiv = document.getElementById('playerSetup');
+            setupDiv.innerHTML = '';
+            
+            players.forEach((player, index) => {
+                const div = document.createElement('div');
+                div.className = 'setup-item';
+                div.innerHTML = `
+                    <div class="player-name">${player.name}</div>
+                    <input 
+                        type="number" 
+                        class="number-input" 
+                        placeholder="Nr" 
+                        value="${player.number}"
+                        min="1" 
+                        max="99"
+                        onchange="updatePlayerNumber(${index}, this.value)"
+                    />
+                    ${index < 5 ? '<span class="badge">Starter</span>' : ''}
+                `;
+                setupDiv.appendChild(div);
+            });
+        }
+
+        function renderGameScreen() {
+            const activePlayersDiv = document.getElementById('activePlayers');
+            activePlayersDiv.innerHTML = '';
+            
+            const activePlayersList = activePlayers.map(index => players[index]);
+            
+            activePlayersList.forEach((player, activeIndex) => {
+                const actualIndex = activePlayers[activeIndex];
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.border = '2px solid rgba(249, 115, 22, 0.5)';
+                card.innerHTML = `
+                    <div class="player-header text-center">
+                        #${player.number} ${player.name}
+                    </div>
+                    <div style="padding: 0.5rem;">
+                        <div class="space-y-2 text-xs">
+                            ${createStatRow('2PT:', player.stats.twoPointers, actualIndex, 'twoPointers', true)}
+                            ${createStatRow('3PT:', player.stats.threePointers, actualIndex, 'threePointers', true)}
+                            ${createStatRow('REB:', player.stats.rebounds, actualIndex, 'rebounds', true)}
+                            ${createStatRow('AST:', player.stats.assists, actualIndex, 'assists', true)}
+                            ${createStatRow('MISS:', player.stats.misses, actualIndex, 'misses', false)}
+                            ${createStatRow('TO:', player.stats.turnovers, actualIndex, 'turnovers', false)}
+                            ${createStatRow('BLK:', player.stats.blocks, actualIndex, 'blocks', true)}
+                            ${createStatRow('STL:', player.stats.steals, actualIndex, 'steals', true)}
+                        </div>
+                    </div>
+                `;
+                activePlayersDiv.appendChild(card);
+            });
+
+            // Render bench players
+            const benchPlayers = players.filter((_, index) => !activePlayers.includes(index));
+            const benchDiv = document.getElementById('benchPlayers');
+            const benchSection = document.getElementById('benchSection');
+            
+            if (benchPlayers.length > 0) {
+                benchSection.style.display = 'block';
+                benchDiv.innerHTML = '';
+                
+                benchPlayers.forEach((player) => {
+                    const playerIndex = players.findIndex(p => p.name === player.name);
+                    const div = document.createElement('div');
+                    div.className = 'bench-player';
+                    div.innerHTML = `
+                        <div class="text-xs font-medium text-center">
+                            #${player.number} ${player.name}
+                        </div>
+                        <select class="select" onchange="if(this.value) swapPlayer(parseInt(this.value), ${playerIndex}); this.value='';">
+                            <option value="">Wissel in</option>
+                            ${activePlayers.map(activeIndex => 
+                                `<option value="${activeIndex}">Vervang #${players[activeIndex].number} ${players[activeIndex].name}</option>`
+                            ).join('')}
+                        </select>
+                    `;
+                    benchDiv.appendChild(div);
+                });
+            } else {
+                benchSection.style.display = 'none';
+            }
+        }
+
+        function createStatRow(label, value, playerIndex, stat, isGoodStat) {
+            const plusClass = isGoodStat ? 'stat-button-plus-good' : 'stat-button-plus-bad';
+            return `
+                <div class="stat-row">
+                    <span>${label}</span>
+                    <div class="stat-controls">
+                        <button class="stat-button stat-button-minus" onclick="updateStat(${playerIndex}, '${stat}', false)">-</button>
+                        <span class="stat-value">${value}</span>
+                        <button class="stat-button ${plusClass}" onclick="updateStat(${playerIndex}, '${stat}', true)">+</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startGame() {
+            gameStarted = true;
+            document.getElementById('setupScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            renderGameScreen();
+        }
+
+        function backToSetup() {
+            gameStarted = false;
+            document.getElementById('setupScreen').style.display = 'block';
+            document.getElementById('gameScreen').style.display = 'none';
+        }
+
+        // Event listeners
+        document.getElementById('startGameBtn').addEventListener('click', startGame);
+        document.getElementById('backToSetupBtn').addEventListener('click', backToSetup);
+
+        // Initial render
+        renderSetupScreen();
+        checkCanStartGame();
+    </script>
+</body>
+</html>

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Basketball Stats">
+    <title>🏀 Basketball Stats</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f97316 5%, #92400e 95%);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            padding: 0.5rem;
+            -webkit-user-select: none;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1rem;
+            padding: 1rem 0;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .card-header {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            background: #fafafa;
+        }
+
+        .card-content {
+            padding: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #92400e;
+            margin: 0;
+        }
+
+        .button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            touch-action: manipulation;
+            -webkit-appearance: none;
+            min-height: 44px;
+        }
+
+        .button:active {
+            transform: scale(0.95);
+        }
+
+        .button-primary {
+            background: #f97316;
+            color: white;
+        }
+
+        .button-primary:hover {
+            background: #ea580c;
+        }
+
+        .button-primary:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .button-outline {
+            background: transparent;
+            color: #f97316;
+            border: 2px solid #f97316;
+        }
+
+        .button-outline:hover {
+            background: #f97316;
+            color: white;
+        }
+
+        .setup-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .player-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .player-name {
+            min-width: 80px;
+            font-weight: 600;
+            text-transform: capitalize;
+            font-size: 0.875rem;
+        }
+
+        .number-input {
+            width: 60px;
+            padding: 0.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 1rem;
+            text-align: center;
+            font-weight: 600;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .number-input:focus {
+            outline: none;
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+
+        .starter-badge {
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .player-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            border: 3px solid #f97316;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .player-header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .player-number {
+            background: #92400e;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin: 0 auto 0.5rem;
+        }
+
+        .player-name-display {
+            font-weight: 700;
+            color: #1f2937;
+            text-transform: capitalize;
+            font-size: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.25rem 0;
+        }
+
+        .stat-label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .stat-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-button {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.1s;
+            touch-action: manipulation;
+        }
+
+        .stat-button:active {
+            transform: scale(0.9);
+        }
+
+        .stat-button-minus {
+            background: #ef4444;
+            color: white;
+        }
+
+        .stat-button-plus-positive {
+            background: #10b981;
+            color: white;
+        }
+
+        .stat-button-plus-negative {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .stat-value {
+            min-width: 28px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .bench-section {
+            margin-top: 1rem;
+        }
+
+        .bench-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .bench-player {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: #f3f4f6;
+            border-radius: 8px;
+        }
+
+        .bench-player-info {
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .swap-select {
+            padding: 0.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            background: white;
+            width: 100%;
+            max-width: 180px;
+        }
+
+        .back-button {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* iOS specific optimizations */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                height: 100vh;
+                height: -webkit-fill-available;
+            }
+            
+            .button, .stat-button, .number-input, .swap-select {
+                -webkit-appearance: none;
+            }
+        }
+
+        /* Touch improvements */
+        .stat-button, .button {
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        .stat-controls .stat-button {
+            min-height: 36px;
+            min-width: 36px;
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 640px) {
+            .container {
+                padding: 0.25rem;
+            }
+            
+            .header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .player-card {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏀 Basketball Stats</h1>
+            <p id="headerText">Geef je spelers rugnummers</p>
+        </div>
+
+        <!-- Setup Screen -->
+        <div id="setupScreen">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Team Setup</h2>
+                </div>
+                <div class="card-content">
+                    <div class="setup-grid" id="playersSetup">
+                        <!-- Players will be rendered here -->
+                    </div>
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <button id="startGameBtn" class="button button-primary" disabled>
+                            Start Game
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="hidden">
+            <div class="game-grid" id="activePlayersGrid">
+                <!-- Active players will be rendered here -->
+            </div>
+
+            <div id="benchSection" class="bench-section hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title" style="text-align: center;">Bank Spelers</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="bench-grid" id="benchPlayersGrid">
+                            <!-- Bench players will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="back-button">
+                <button id="backToSetupBtn" class="button button-outline">
+                    Terug naar Setup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App state
+        const TEAM_PLAYERS = ["wendel", "lucas", "chris-jan", "nelis", "váál", "géér", "stef", "jupspip", "tyg"];
+        
+        let gameStarted = false;
+        let players = TEAM_PLAYERS.map(name => ({
+            name,
+            number: "",
+            stats: {
+                twoPointers: 0,
+                threePointers: 0,
+                rebounds: 0,
+                assists: 0,
+                misses: 0,
+                turnovers: 0,
+                blocks: 0,
+                steals: 0,
+                fouls: 0
+            }
+        }));
+        
+        let activePlayers = [0, 1, 2, 3, 4];
+
+        // Utility functions
+        function updatePlayerNumber(index, number) {
+            players[index].number = number;
+            checkCanStartGame();
+        }
+
+        function updateStat(playerIndex, stat, increment = true) {
+            const change = increment ? 1 : -1;
+            players[playerIndex].stats[stat] = Math.max(0, players[playerIndex].stats[stat] + change);
+            renderGameScreen();
+        }
+
+        function swapPlayer(activeIndex, benchIndex) {
+            const newActivePlayers = [...activePlayers];
+            const currentActiveIndex = newActivePlayers.indexOf(activeIndex);
+            if (currentActiveIndex !== -1) {
+                newActivePlayers[currentActiveIndex] = benchIndex;
+                activePlayers = newActivePlayers;
+                renderGameScreen();
+            }
+        }
+
+        function checkCanStartGame() {
+            const canStart = players.slice(0, 5).every(player => player.number.trim() !== "");
+            const startBtn = document.getElementById('startGameBtn');
+            if (startBtn) {
+                startBtn.disabled = !canStart;
+            }
+        }
+
+        // Render functions
+        function renderSetupScreen() {
+            const container = document.getElementById('playersSetup');
+            if (!container) return;
+
+            container.innerHTML = players.map((player, index) => `
+                <div class="player-row">
+                    <div class="player-name">${player.name}</div>
+                    <input 
+                        type="number" 
+                        class="number-input" 
+                        placeholder="Nr" 
+                        value="${player.number}" 
+                        min="1" 
+                        max="99"
+                        onchange="updatePlayerNumber(${index}, this.value)"
+                        oninput="updatePlayerNumber(${index}, this.value)"
+                    />
+                    ${index < 5 ? '<span class="starter-badge">Starter</span>' : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderGameScreen() {
+            renderActivePlayers();
+            renderBenchPlayers();
+        }
+
+        function renderActivePlayers() {
+            const container = document.getElementById('activePlayersGrid');
+            if (!container) return;
+
+            container.innerHTML = activePlayers.map(playerIndex => {
+                const player = players[playerIndex];
+                return `
+                    <div class="player-card">
+                        <div class="player-header">
+                            <div class="player-number">${player.number}</div>
+                            <div class="player-name-display">${player.name}</div>
+                        </div>
+                        <div class="stats-grid">
+                            ${renderStatRow('2PT', 'twoPointers', playerIndex, true)}
+                            ${renderStatRow('3PT', 'threePointers', playerIndex, true)}
+                            ${renderStatRow('REB', 'rebounds', playerIndex, true)}
+                            ${renderStatRow('AST', 'assists', playerIndex, true)}
+                            ${renderStatRow('MISS', 'misses', playerIndex, false)}
+                            ${renderStatRow('TO', 'turnovers', playerIndex, false)}
+                            ${renderStatRow('BLK', 'blocks', playerIndex, true)}
+                            ${renderStatRow('STL', 'steals', playerIndex, true)}
+                            ${renderStatRow('FOUL', 'fouls', playerIndex, false)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderStatRow(label, stat, playerIndex, isPositive) {
+            const value = players[playerIndex].stats[stat];
+            const plusClass = isPositive ? 'stat-button-plus-positive' : 'stat-button-plus-negative';
+            
+            return `
+                <div class="stat-row">
+                    <span class="stat-label">${label}:</span>
+                    <div class="stat-controls">
+                        <button 
+                            class="stat-button stat-button-minus" 
+                            onclick="updateStat(${playerIndex}, '${stat}', false)"
+                            ${value === 0 ? 'disabled' : ''}
+                        >-</button>
+                        <span class="stat-value">${value}</span>
+                        <button 
+                            class="stat-button ${plusClass}" 
+                            onclick="updateStat(${playerIndex}, '${stat}', true)"
+                        >+</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderBenchPlayers() {
+            const benchPlayerIndices = players
+                .map((_, index) => index)
+                .filter(index => !activePlayers.includes(index) && players[index].number.trim() !== "");
+
+            const benchSection = document.getElementById('benchSection');
+            const container = document.getElementById('benchPlayersGrid');
+            
+            if (!benchSection || !container) return;
+
+            if (benchPlayerIndices.length === 0) {
+                benchSection.classList.add('hidden');
+                return;
+            }
+
+            benchSection.classList.remove('hidden');
+            container.innerHTML = benchPlayerIndices.map(playerIndex => {
+                const player = players[playerIndex];
+                return `
+                    <div class="bench-player">
+                        <div class="bench-player-info">
+                            #${player.number} ${player.name}
+                        </div>
+                        <select class="swap-select" onchange="handleSwap(this, ${playerIndex})">
+                            <option value="">Wissel in</option>
+                            ${activePlayers.map((activeIndex, i) => `
+                                <option value="${activeIndex}">
+                                    Vervang #${players[activeIndex].number} ${players[activeIndex].name}
+                                </option>
+                            `).join('')}
+                        </select>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function handleSwap(selectElement, benchIndex) {
+            const activeIndex = parseInt(selectElement.value);
+            if (activeIndex !== '' && !isNaN(activeIndex)) {
+                swapPlayer(activeIndex, benchIndex);
+                selectElement.value = '';
+            }
+        }
+
+        // Main functions
+        function startGame() {
+            if (!players.slice(0, 5).every(player => player.number.trim() !== "")) {
+                alert('Alle starters moeten een rugnummer hebben!');
+                return;
+            }
+
+            gameStarted = true;
+            document.getElementById('setupScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('headerText').textContent = 'Live Game Stats';
+            
+            renderGameScreen();
+        }
+
+        function backToSetup() {
+            gameStarted = false;
+            document.getElementById('setupScreen').classList.remove('hidden');
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('headerText').textContent = 'Geef je spelers rugnummers';
+        }
+
+        // Event listeners
+        function setupEventListeners() {
+            const startGameBtn = document.getElementById('startGameBtn');
+            const backToSetupBtn = document.getElementById('backToSetupBtn');
+            
+            if (startGameBtn) {
+                startGameBtn.addEventListener('click', startGame);
+            }
+            if (backToSetupBtn) {
+                backToSetupBtn.addEventListener('click', backToSetup);
+            }
+        }
+
+        // Initialize app
+        function init() {
+            renderSetupScreen();
+            checkCanStartGame();
+            setupEventListeners();
+        }
+
+        // Start the app when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // Prevent zoom on iOS
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+
+        // Prevent default touch behaviors that might interfere
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        });
+
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
+</body>
+</html>

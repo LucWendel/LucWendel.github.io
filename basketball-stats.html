@@ -984,7 +984,7 @@
                         ${createStatButton(
                             player.stats.twoPointMade,
                             `scoreWithAssist(${player.id}, 'twoPoint')`,
-                            `updateStat(${player.id}, 'twoPointMade', false)`,
+                            `updateStat(${player.id}, 'twoPointMade', false); updateStat(${player.id}, 'twoPointAttempted', false);`,
                             '🎯 2PT',
                             true,
                             player.stats.twoPointAttempted
@@ -992,7 +992,7 @@
                         ${createStatButton(
                             player.stats.threePointMade,
                             `scoreWithAssist(${player.id}, 'threePoint')`,
-                            `updateStat(${player.id}, 'threePointMade', false)`,
+                            `updateStat(${player.id}, 'threePointMade', false); updateStat(${player.id}, 'threePointAttempted', false);`,
                             '🚀 3PT',
                             true,
                             player.stats.threePointAttempted
@@ -1000,7 +1000,7 @@
                         ${createStatButton(
                             player.stats.freeThrowMade,
                             `updateStat(${player.id}, 'freeThrowMade', true); updateStat(${player.id}, 'freeThrowAttempted', true);`,
-                            `updateStat(${player.id}, 'freeThrowMade', false)`,
+                            `updateStat(${player.id}, 'freeThrowMade', false); updateStat(${player.id}, 'freeThrowAttempted', false);`,
                             '🎳 FT',
                             true,
                             player.stats.freeThrowAttempted

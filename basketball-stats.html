@@ -134,6 +134,16 @@
             transition: all 0.2s ease;
             touch-action: manipulation;
             min-height: 44px;
+            /* iOS Safari fixes */
+            -webkit-appearance: none;
+            appearance: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-transform: translate3d(0,0,0);
+            transform: translate3d(0,0,0);
         }
 
         .btn:hover {
@@ -150,6 +160,17 @@
             background: #f5f5f5;
             color: #333;
             border: 2px solid #ddd;
+            /* iOS Safari fixes */
+            -webkit-appearance: none;
+            appearance: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+            -webkit-user-drag: none;
+            -webkit-transform: translate3d(0,0,0);
+            transform: translate3d(0,0,0);
         }
 
         .btn-secondary:hover {
@@ -289,6 +310,17 @@
             transition: all 0.2s ease;
             font-weight: 600;
             min-height: 32px;
+            /* iOS Safari fixes */
+            -webkit-appearance: none;
+            appearance: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+            -webkit-user-drag: none;
+            -webkit-transform: translate3d(0,0,0);
+            transform: translate3d(0,0,0);
         }
 
         .switch-btn:hover {
@@ -388,6 +420,17 @@
             transition: all 0.2s ease;
             font-weight: 600;
             min-height: 36px;
+            /* iOS Safari fixes */
+            -webkit-appearance: none;
+            appearance: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+            -webkit-user-drag: none;
+            -webkit-transform: translate3d(0,0,0);
+            transform: translate3d(0,0,0);
         }
 
         .miss-btn:hover {
@@ -462,6 +505,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            /* iOS Safari fixes */
+            -webkit-appearance: none;
+            appearance: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+            -webkit-user-drag: none;
+            -webkit-transform: translate3d(0,0,0);
+            transform: translate3d(0,0,0);
         }
 
         .modal-option:hover {
@@ -803,11 +857,18 @@
             const switchPlayerName = document.getElementById('switchPlayerName');
             
             const switchingPlayer = players.find(p => p.id === switchingPlayerId);
-            const courtPlayers = players.filter(p => p.onCourt);
-            
             switchPlayerName.textContent = switchingPlayer.name;
             
-            switchOptions.innerHTML = courtPlayers.map(player => `
+            let availablePlayers;
+            if (switchingPlayer.onCourt) {
+                // Player is on court, show bench players to switch with
+                availablePlayers = players.filter(p => !p.onCourt);
+            } else {
+                // Player is on bench, show court players to switch with
+                availablePlayers = players.filter(p => p.onCourt);
+            }
+            
+            switchOptions.innerHTML = availablePlayers.map(player => `
                 <div class="modal-option" onclick="confirmSwitch(${player.id})">
                     <span style="display: flex; align-items: center; gap: 8px; justify-content: center;">
                         <span>${player.name}</span>
@@ -824,14 +885,15 @@
             switchingPlayerId = null;
         }
 
-        function confirmSwitch(courtPlayerId) {
+        function confirmSwitch(selectedPlayerId) {
             if (switchingPlayerId !== null) {
-                // Switch the players
                 const switchingPlayer = players.find(p => p.id === switchingPlayerId);
-                const courtPlayer = players.find(p => p.id === courtPlayerId);
+                const selectedPlayer = players.find(p => p.id === selectedPlayerId);
                 
-                switchingPlayer.onCourt = true;
-                courtPlayer.onCourt = false;
+                // Switch the court/bench status
+                const tempOnCourt = switchingPlayer.onCourt;
+                switchingPlayer.onCourt = selectedPlayer.onCourt;
+                selectedPlayer.onCourt = tempOnCourt;
                 
                 renderSidebar();
                 renderGameStats();

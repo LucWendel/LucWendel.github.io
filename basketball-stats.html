@@ -615,7 +615,7 @@
         <!-- Setup Phase -->
         <div id="setupPhase">
             <div class="header">
-                <h1>🏀 Basketbal Statistieken Blad</h1>
+                <h1>Basketbal Statistieken Blad</h1>
                 <p>Wijs rugnummers toe aan spelers voordat je begint</p>
             </div>
             
@@ -639,15 +639,15 @@
             <div class="stats-header">
                 <h1 class="stats-title">Live Statistieken</h1>
                 <div class="stats-actions">
-                    <button class="btn btn-secondary" onclick="resetAllStats()">🔄 Reset Stats</button>
-                    <button class="btn btn-secondary" onclick="goToSetup()">⚙️ Instellingen</button>
+                    <button class="btn btn-secondary" onclick="resetAllStats()">Reset Stats</button>
+                    <button class="btn btn-secondary" onclick="goToSetup()">Instellingen</button>
                 </div>
             </div>
             
             <div class="game-layout">
                 <!-- Sidebar -->
                 <div class="sidebar">
-                    <div class="sidebar-title">👥 Speler Beheer</div>
+                    <div class="sidebar-title">Speler Beheer</div>
                     <div id="sidebarContent">
                         <!-- Sidebar content will be inserted here -->
                     </div>
@@ -665,7 +665,7 @@
         <!-- Assist Modal -->
         <div id="assistModal" class="modal">
             <div class="modal-content">
-                <h3>🤝 Was dit een assist?</h3>
+                <h3>Was dit een assist?</h3>
                 <div id="assistOptions" class="modal-options">
                     <!-- Assist options will be inserted here -->
                 </div>
@@ -679,7 +679,7 @@
         <!-- Rebound Modal -->
         <div id="reboundModal" class="modal">
             <div class="modal-content">
-                <h3>🏀 Welk type rebound?</h3>
+                <h3>Welk type rebound?</h3>
                 <div class="modal-options">
                     <div class="modal-option" onclick="confirmRebound('defensive')">Defensieve Rebound</div>
                     <div class="modal-option" onclick="confirmRebound('offensive')">Offensieve Rebound</div>
@@ -693,7 +693,7 @@
         <!-- Switch Modal -->
         <div id="switchModal" class="modal">
             <div class="modal-content">
-                <h3>🔄 Wissel speler</h3>
+                <h3>Wissel speler</h3>
                 <p style="text-align: center; margin-bottom: 16px; color: #666;">Met wie wil je <strong><span id="switchPlayerName"></span></strong> wisselen?</p>
                 <div id="switchOptions" class="modal-options">
                     <!-- Switch options will be inserted here -->
@@ -751,7 +751,7 @@
         }
 
         function resetAllStats() {
-            if (confirm('🔄 Weet je zeker dat je alle statistieken wilt resetten?')) {
+            if (confirm('Weet je zeker dat je alle statistieken wilt resetten?')) {
                 players.forEach(player => {
                     player.stats = {
                         twoPointMade: 0,

@@ -76,9 +76,12 @@
 
         .player-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
             margin-bottom: 24px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .player-setup {
@@ -550,6 +553,94 @@
             font-weight: 500;
         }
 
+        .history-item {
+            background: white;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .history-item:hover {
+            border-color: #ff6600;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 102, 0, 0.1);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .history-date {
+            font-weight: bold;
+            color: #ff6600;
+        }
+
+        .history-score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .history-players {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .history-player {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .history-player-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .history-player-stats {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .stats-table th,
+        .stats-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .stats-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .stats-table td {
+            font-size: 14px;
+        }
+
+        .stats-table tr:hover {
+            background: #f8f9fa;
+        }
+
         /* Mobile optimizations */
         @media (max-width: 1024px) {
             .game-layout {
@@ -583,6 +674,7 @@
             
             .player-grid {
                 grid-template-columns: 1fr;
+                max-width: 400px;
             }
             
             .stat-group {
@@ -693,6 +785,8 @@
             <div class="stats-header">
                 <h1 class="stats-title">Live Statistieken</h1>
                 <div class="stats-actions">
+                    <button class="btn btn-secondary" onclick="saveCurrentGame()">Wedstrijd Opslaan</button>
+                    <button class="btn btn-secondary" onclick="showGameHistory()">Geschiedenis</button>
                     <button class="btn btn-secondary" onclick="resetAllStats()">Reset Stats</button>
                     <button class="btn btn-secondary" onclick="goToSetup()">Instellingen</button>
                 </div>
@@ -757,10 +851,40 @@
                 </div>
             </div>
         </div>
+
+        <!-- Game History Modal -->
+        <div id="historyModal" class="modal">
+            <div class="modal-content" style="max-width: 800px; max-height: 90vh;">
+                <h3>Wedstrijd Geschiedenis</h3>
+                <div style="margin-bottom: 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-small" onclick="showPlayerStats()">Speler Prestaties</button>
+                    <button class="btn btn-small" onclick="exportGameData()">Export Data</button>
+                </div>
+                <div id="historyContent" style="max-height: 400px; overflow-y: auto;">
+                    <!-- History content will be inserted here -->
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="hideHistoryModal()">Sluiten</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Stats Modal -->
+        <div id="playerStatsModal" class="modal">
+            <div class="modal-content" style="max-width: 900px; max-height: 90vh;">
+                <h3>Speler Prestaties (Alle Wedstrijden)</h3>
+                <div id="playerStatsContent" style="max-height: 500px; overflow-y: auto;">
+                    <!-- Player stats content will be inserted here -->
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="hidePlayerStatsModal()">Sluiten</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        const PLAYER_NAMES = ["Wendel", "Lucas", "Nelis", "Chris-Jan", "Jupspip", "Géér", "Váál", "Tyg", "Stef"];
+        const PLAYER_NAMES = ["Wendel", "Slimbo", "Nelis", "Chris-Jan", "Jupspip", "Géér", "Váál", "Tyg", "Beest", "Coach"];
         
         let players = PLAYER_NAMES.map((name, index) => ({
             id: index,
@@ -786,6 +910,82 @@
         let currentAssistContext = null;
         let currentReboundPlayerId = null;
         let switchingPlayerId = null;
+        let currentGameStartTime = null;
+        let gameHistory = [];
+        
+        // Track last shot action per player to handle correct undo
+        let lastShotActions = {};
+
+        // Load saved data from localStorage
+        function loadGameHistory() {
+            const saved = localStorage.getItem('basketballGameHistory');
+            if (saved) {
+                gameHistory = JSON.parse(saved);
+            }
+        }
+
+        // Save game history to localStorage
+        function saveGameHistory() {
+            localStorage.setItem('basketballGameHistory', JSON.stringify(gameHistory));
+        }
+
+        // Calculate total points for a player
+        function calculatePlayerPoints(stats) {
+            return (stats.twoPointMade * 2) + (stats.threePointMade * 3) + stats.freeThrowMade;
+        }
+
+        // Calculate team total points
+        function calculateTeamPoints() {
+            return players.reduce((total, player) => total + calculatePlayerPoints(player.stats), 0);
+        }
+
+        // Track shot actions for correct undo functionality
+        function trackShotAction(playerId, shotType, wasMade) {
+            if (!lastShotActions[playerId]) {
+                lastShotActions[playerId] = {};
+            }
+            lastShotActions[playerId][shotType] = wasMade;
+        }
+
+        // Handle shot miss (only increment attempted)
+        function addShotMiss(playerId, shotType) {
+            updateStat(playerId, shotType + 'Attempted', true);
+            trackShotAction(playerId, shotType, false);
+        }
+
+        // Undo last shot action correctly
+        function undoLastShot(playerId, shotType) {
+            const player = players.find(p => p.id === playerId);
+            if (!player) return;
+
+            const lastAction = lastShotActions[playerId] && lastShotActions[playerId][shotType];
+            
+            if (lastAction === true) {
+                // Last action was a made shot, remove both made and attempted
+                if (player.stats[shotType + 'Made'] > 0) {
+                    updateStat(playerId, shotType + 'Made', false);
+                    updateStat(playerId, shotType + 'Attempted', false);
+                }
+            } else if (lastAction === false) {
+                // Last action was a miss, only remove attempted
+                if (player.stats[shotType + 'Attempted'] > 0) {
+                    updateStat(playerId, shotType + 'Attempted', false);
+                }
+            } else {
+                // No tracked action, default to removing made shot if available
+                if (player.stats[shotType + 'Made'] > 0) {
+                    updateStat(playerId, shotType + 'Made', false);
+                    updateStat(playerId, shotType + 'Attempted', false);
+                } else if (player.stats[shotType + 'Attempted'] > 0) {
+                    updateStat(playerId, shotType + 'Attempted', false);
+                }
+            }
+            
+            // Clear the tracked action after undo
+            if (lastShotActions[playerId]) {
+                delete lastShotActions[playerId][shotType];
+            }
+        }
 
         function updatePlayerNumber(playerId, value) {
             const player = players.find(p => p.id === playerId);
@@ -822,6 +1022,10 @@
                         turnovers: 0
                     };
                 });
+                
+                // Clear shot action tracking
+                lastShotActions = {};
+                
                 renderGameStats();
                 renderSidebar();
             }
@@ -830,12 +1034,20 @@
         function switchPlayer(playerId) {
             const player = players.find(p => p.id === playerId);
             const courtPlayers = players.filter(p => p.onCourt);
+            const benchPlayers = players.filter(p => !p.onCourt);
             
             if (player.onCourt) {
-                // Moving from court to bench - always allowed
-                player.onCourt = false;
-                renderSidebar();
-                renderGameStats();
+                // Moving from court to bench
+                if (benchPlayers.length < 4) {
+                    // Space available on bench
+                    player.onCourt = false;
+                    renderSidebar();
+                    renderGameStats();
+                } else {
+                    // Bench is full, need to switch with someone
+                    switchingPlayerId = playerId;
+                    showSwitchModal();
+                }
             } else {
                 // Moving from bench to court
                 if (courtPlayers.length < 5) {
@@ -937,6 +1149,9 @@
             updateStat(playerId, statType + 'Made', true);
             updateStat(playerId, statType + 'Attempted', true);
             
+            // Track that this was a made shot
+            trackShotAction(playerId, statType, true);
+            
             // Update the assist
             if (assistPlayerId !== null) {
                 updateStat(assistPlayerId, 'assists', true);
@@ -951,6 +1166,9 @@
             // Update only the scorer's stats
             updateStat(playerId, statType + 'Made', true);
             updateStat(playerId, statType + 'Attempted', true);
+            
+            // Track that this was a made shot
+            trackShotAction(playerId, statType, true);
             
             hideAssistModal();
         }
@@ -986,6 +1204,8 @@
         }
 
         function startGame() {
+            currentGameStartTime = new Date().toISOString();
+            lastShotActions = {}; // Reset shot tracking for new game
             document.getElementById('setupPhase').classList.add('hidden');
             document.getElementById('gamePhase').classList.remove('hidden');
             renderGameStats();
@@ -1046,7 +1266,7 @@
                         ${createStatButton(
                             player.stats.twoPointMade,
                             `scoreWithAssist(${player.id}, 'twoPoint')`,
-                            `updateStat(${player.id}, 'twoPointMade', false); updateStat(${player.id}, 'twoPointAttempted', false);`,
+                            `undoLastShot(${player.id}, 'twoPoint')`,
                             '2PT',
                             true,
                             player.stats.twoPointAttempted
@@ -1054,15 +1274,15 @@
                         ${createStatButton(
                             player.stats.threePointMade,
                             `scoreWithAssist(${player.id}, 'threePoint')`,
-                            `updateStat(${player.id}, 'threePointMade', false); updateStat(${player.id}, 'threePointAttempted', false);`,
+                            `undoLastShot(${player.id}, 'threePoint')`,
                             '3PT',
                             true,
                             player.stats.threePointAttempted
                         )}
                         ${createStatButton(
                             player.stats.freeThrowMade,
-                            `updateStat(${player.id}, 'freeThrowMade', true); updateStat(${player.id}, 'freeThrowAttempted', true);`,
-                            `updateStat(${player.id}, 'freeThrowMade', false); updateStat(${player.id}, 'freeThrowAttempted', false);`,
+                            `updateStat(${player.id}, 'freeThrowMade', true); updateStat(${player.id}, 'freeThrowAttempted', true); trackShotAction(${player.id}, 'freeThrow', true);`,
+                            `undoLastShot(${player.id}, 'freeThrow')`,
                             'FT',
                             true,
                             player.stats.freeThrowAttempted
@@ -1071,9 +1291,9 @@
 
                     <!-- Misser Knoppen -->
                     <div class="miss-buttons">
-                        <button class="miss-btn" onclick="updateStat(${player.id}, 'twoPointAttempted', true)">2PT Mis</button>
-                        <button class="miss-btn" onclick="updateStat(${player.id}, 'threePointAttempted', true)">3PT Mis</button>
-                        <button class="miss-btn" onclick="updateStat(${player.id}, 'freeThrowAttempted', true)">FT Mis</button>
+                        <button class="miss-btn" onclick="addShotMiss(${player.id}, 'twoPoint')">2PT Mis</button>
+                        <button class="miss-btn" onclick="addShotMiss(${player.id}, 'threePoint')">3PT Mis</button>
+                        <button class="miss-btn" onclick="addShotMiss(${player.id}, 'freeThrow')">FT Mis</button>
                     </div>
 
                     <!-- Rebound Statistieken -->
@@ -1081,11 +1301,11 @@
                         <div class="stat-button">
                             <div class="stat-label">REBOUNDS</div>
                             <div class="stat-value">[${player.stats.defensiveRebounds} - ${player.stats.offensiveRebounds}]</div>
-                            <div class="rebound-display">DEF - OFF</div>
                             <div class="stat-controls">
                                 <button class="btn btn-secondary btn-icon" onclick="decreaseRebound(${player.id})">−</button>
                                 <button class="btn btn-icon" onclick="showReboundModal(${player.id})">+</button>
                             </div>
+                            <div class="rebound-display">DEF - OFF</div>
                         </div>
                         ${createStatButton(
                             player.stats.assists,
@@ -1159,6 +1379,239 @@
             `;
         }
 
+        // Save current game to history
+        function saveCurrentGame() {
+            if (!currentGameStartTime) {
+                alert('Start eerst een wedstrijd voordat je deze kunt opslaan!');
+                return;
+            }
+
+            const teamScore = calculateTeamPoints();
+            const playersData = players.map(player => ({
+                name: player.name,
+                number: player.number,
+                stats: { ...player.stats },
+                points: calculatePlayerPoints(player.stats)
+            }));
+
+            const gameData = {
+                id: Date.now(),
+                date: currentGameStartTime,
+                endDate: new Date().toISOString(),
+                teamScore: teamScore,
+                players: playersData
+            };
+
+            gameHistory.unshift(gameData); // Add to beginning of array
+            saveGameHistory();
+            
+            alert(`Wedstrijd opgeslagen! Team score: ${teamScore} punten`);
+        }
+
+        // Show game history modal
+        function showGameHistory() {
+            const modal = document.getElementById('historyModal');
+            const content = document.getElementById('historyContent');
+            
+            if (gameHistory.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Nog geen wedstrijden gespeeld!</p>';
+            } else {
+                content.innerHTML = gameHistory.map(game => {
+                    const date = new Date(game.date).toLocaleDateString('nl-NL', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    const time = new Date(game.date).toLocaleTimeString('nl-NL', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    const topScorer = game.players.reduce((top, player) => 
+                        player.points > top.points ? player : top, game.players[0]);
+
+                    return `
+                        <div class="history-item">
+                            <div class="history-header">
+                                <div class="history-date">${date} om ${time}</div>
+                                <div class="history-score">Team Score: ${game.teamScore}</div>
+                            </div>
+                            <div style="margin-bottom: 8px;">
+                                <strong>Top Scorer:</strong> ${topScorer.name} (${topScorer.points} punten)
+                            </div>
+                            <div class="history-players">
+                                ${game.players.filter(p => calculatePlayerPoints(p.stats) > 0 || p.stats.assists > 0 || (p.stats.defensiveRebounds + p.stats.offensiveRebounds) > 0).map(player => `
+                                    <div class="history-player">
+                                        <div class="history-player-name">
+                                            ${player.name} ${player.number ? `#${player.number}` : ''}
+                                        </div>
+                                        <div class="history-player-stats">
+                                            ${player.points} pts, ${player.stats.assists} ast, ${player.stats.defensiveRebounds + player.stats.offensiveRebounds} reb
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            modal.classList.add('show');
+        }
+
+        // Hide game history modal
+        function hideHistoryModal() {
+            document.getElementById('historyModal').classList.remove('show');
+        }
+
+        // Show player statistics across all games
+        function showPlayerStats() {
+            const modal = document.getElementById('playerStatsModal');
+            const content = document.getElementById('playerStatsContent');
+            
+            if (gameHistory.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Nog geen wedstrijden om statistieken te tonen!</p>';
+            } else {
+                // Calculate totals for each player across all games
+                const playerTotals = {};
+                
+                PLAYER_NAMES.forEach(name => {
+                    playerTotals[name] = {
+                        gamesPlayed: 0,
+                        totalPoints: 0,
+                        totalAssists: 0,
+                        totalRebounds: 0,
+                        totalSteals: 0,
+                        totalBlocks: 0,
+                        totalTurnovers: 0,
+                        twoPointMade: 0,
+                        twoPointAttempted: 0,
+                        threePointMade: 0,
+                        threePointAttempted: 0,
+                        freeThrowMade: 0,
+                        freeThrowAttempted: 0
+                    };
+                });
+
+                gameHistory.forEach(game => {
+                    game.players.forEach(player => {
+                        if (playerTotals[player.name]) {
+                            const totals = playerTotals[player.name];
+                            const hasStats = calculatePlayerPoints(player.stats) > 0 || 
+                                           player.stats.assists > 0 || 
+                                           (player.stats.defensiveRebounds + player.stats.offensiveRebounds) > 0 ||
+                                           player.stats.steals > 0 || 
+                                           player.stats.blocks > 0;
+                            
+                            if (hasStats) {
+                                totals.gamesPlayed++;
+                                totals.totalPoints += player.points;
+                                totals.totalAssists += player.stats.assists;
+                                totals.totalRebounds += player.stats.defensiveRebounds + player.stats.offensiveRebounds;
+                                totals.totalSteals += player.stats.steals;
+                                totals.totalBlocks += player.stats.blocks;
+                                totals.totalTurnovers += player.stats.turnovers;
+                                totals.twoPointMade += player.stats.twoPointMade;
+                                totals.twoPointAttempted += player.stats.twoPointAttempted;
+                                totals.threePointMade += player.stats.threePointMade;
+                                totals.threePointAttempted += player.stats.threePointAttempted;
+                                totals.freeThrowMade += player.stats.freeThrowMade;
+                                totals.freeThrowAttempted += player.stats.freeThrowAttempted;
+                            }
+                        }
+                    });
+                });
+
+                // Sort players by total points
+                const sortedPlayers = Object.entries(playerTotals)
+                    .filter(([name, stats]) => stats.gamesPlayed > 0)
+                    .sort(([, a], [, b]) => b.totalPoints - a.totalPoints);
+
+                content.innerHTML = `
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th>Speler</th>
+                                <th>Wedstrijden</th>
+                                <th>Totaal Punten</th>
+                                <th>Gem. Punten</th>
+                                <th>Assists</th>
+                                <th>Rebounds</th>
+                                <th>Steals</th>
+                                <th>Blocks</th>
+                                <th>2PT %</th>
+                                <th>3PT %</th>
+                                <th>FT %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${sortedPlayers.map(([name, stats]) => {
+                                const avgPoints = (stats.totalPoints / stats.gamesPlayed).toFixed(1);
+                                const twoPointPct = stats.twoPointAttempted > 0 ? 
+                                    ((stats.twoPointMade / stats.twoPointAttempted) * 100).toFixed(1) + '%' : '-';
+                                const threePointPct = stats.threePointAttempted > 0 ? 
+                                    ((stats.threePointMade / stats.threePointAttempted) * 100).toFixed(1) + '%' : '-';
+                                const freeThrowPct = stats.freeThrowAttempted > 0 ? 
+                                    ((stats.freeThrowMade / stats.freeThrowAttempted) * 100).toFixed(1) + '%' : '-';
+                                
+                                return `
+                                    <tr>
+                                        <td><strong>${name}</strong></td>
+                                        <td>${stats.gamesPlayed}</td>
+                                        <td><strong>${stats.totalPoints}</strong></td>
+                                        <td>${avgPoints}</td>
+                                        <td>${stats.totalAssists}</td>
+                                        <td>${stats.totalRebounds}</td>
+                                        <td>${stats.totalSteals}</td>
+                                        <td>${stats.totalBlocks}</td>
+                                        <td>${twoPointPct}</td>
+                                        <td>${threePointPct}</td>
+                                        <td>${freeThrowPct}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+            
+            modal.classList.add('show');
+        }
+
+        // Hide player stats modal
+        function hidePlayerStatsModal() {
+            document.getElementById('playerStatsModal').classList.remove('show');
+        }
+
+        // Export game data as JSON
+        function exportGameData() {
+            if (gameHistory.length === 0) {
+                alert('Geen data om te exporteren!');
+                return;
+            }
+
+            const exportData = {
+                exportDate: new Date().toISOString(),
+                totalGames: gameHistory.length,
+                games: gameHistory
+            };
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `basketball-stats-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert('Data geëxporteerd! Check je Downloads folder.');
+        }
+
         // Close modal when clicking outside
         document.addEventListener('click', function(event) {
             const modals = document.querySelectorAll('.modal');
@@ -1173,6 +1626,7 @@
         });
 
         // Initialize the app
+        loadGameHistory();
         renderSetup();
         
         // Prevent zoom on iOS when focusing inputs

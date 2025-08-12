@@ -629,7 +629,7 @@
                 </div>
                 
                 <div class="center">
-                    <button class="btn" onclick="startGame()">🚀 Begin Wedstrijd</button>
+                    <button class="btn" onclick="startGame()">Begin Wedstrijd</button>
                 </div>
             </div>
         </div>
@@ -637,7 +637,7 @@
         <!-- Game Phase -->
         <div id="gamePhase" class="hidden">
             <div class="stats-header">
-                <h1 class="stats-title">📊 Live Statistieken</h1>
+                <h1 class="stats-title">Live Statistieken</h1>
                 <div class="stats-actions">
                     <button class="btn btn-secondary" onclick="resetAllStats()">🔄 Reset Stats</button>
                     <button class="btn btn-secondary" onclick="goToSetup()">⚙️ Instellingen</button>
@@ -670,8 +670,8 @@
                     <!-- Assist options will be inserted here -->
                 </div>
                 <div class="modal-actions">
-                    <button class="btn btn-secondary" onclick="confirmNoAssist()">❌ Geen Assist</button>
-                    <button class="btn btn-secondary" onclick="hideAssistModal()">↩️ Annuleren</button>
+                    <button class="btn btn-secondary" onclick="confirmNoAssist()">Geen Assist</button>
+                    <button class="btn btn-secondary" onclick="hideAssistModal()">Annuleren</button>
                 </div>
             </div>
         </div>
@@ -681,11 +681,11 @@
             <div class="modal-content">
                 <h3>🏀 Welk type rebound?</h3>
                 <div class="modal-options">
-                    <div class="modal-option" onclick="confirmRebound('defensive')">🛡️ Defensieve Rebound</div>
-                    <div class="modal-option" onclick="confirmRebound('offensive')">⚡ Offensieve Rebound</div>
+                    <div class="modal-option" onclick="confirmRebound('defensive')">Defensieve Rebound</div>
+                    <div class="modal-option" onclick="confirmRebound('offensive')">Offensieve Rebound</div>
                 </div>
                 <div class="modal-actions">
-                    <button class="btn btn-secondary" onclick="hideReboundModal()">↩️ Annuleren</button>
+                    <button class="btn btn-secondary" onclick="hideReboundModal()">Annuleren</button>
                 </div>
             </div>
         </div>
@@ -699,7 +699,7 @@
                     <!-- Switch options will be inserted here -->
                 </div>
                 <div class="modal-actions">
-                    <button class="btn btn-secondary" onclick="hideSwitchModal()">↩️ Annuleren</button>
+                    <button class="btn btn-secondary" onclick="hideSwitchModal()">Annuleren</button>
                 </div>
             </div>
         </div>
@@ -985,7 +985,7 @@
                             player.stats.twoPointMade,
                             `scoreWithAssist(${player.id}, 'twoPoint')`,
                             `updateStat(${player.id}, 'twoPointMade', false); updateStat(${player.id}, 'twoPointAttempted', false);`,
-                            '🎯 2PT',
+                            '2PT',
                             true,
                             player.stats.twoPointAttempted
                         )}
@@ -993,7 +993,7 @@
                             player.stats.threePointMade,
                             `scoreWithAssist(${player.id}, 'threePoint')`,
                             `updateStat(${player.id}, 'threePointMade', false); updateStat(${player.id}, 'threePointAttempted', false);`,
-                            '🚀 3PT',
+                            '3PT',
                             true,
                             player.stats.threePointAttempted
                         )}
@@ -1001,7 +1001,7 @@
                             player.stats.freeThrowMade,
                             `updateStat(${player.id}, 'freeThrowMade', true); updateStat(${player.id}, 'freeThrowAttempted', true);`,
                             `updateStat(${player.id}, 'freeThrowMade', false); updateStat(${player.id}, 'freeThrowAttempted', false);`,
-                            '🎳 FT',
+                            'FT',
                             true,
                             player.stats.freeThrowAttempted
                         )}
@@ -1009,15 +1009,15 @@
 
                     <!-- Misser Knoppen -->
                     <div class="miss-buttons">
-                        <button class="miss-btn" onclick="updateStat(${player.id}, 'twoPointAttempted', true)">❌ 2PT Mis</button>
-                        <button class="miss-btn" onclick="updateStat(${player.id}, 'threePointAttempted', true)">❌ 3PT Mis</button>
-                        <button class="miss-btn" onclick="updateStat(${player.id}, 'freeThrowAttempted', true)">❌ VW Mis</button>
+                        <button class="miss-btn" onclick="updateStat(${player.id}, 'twoPointAttempted', true)">2PT Mis</button>
+                        <button class="miss-btn" onclick="updateStat(${player.id}, 'threePointAttempted', true)">3PT Mis</button>
+                        <button class="miss-btn" onclick="updateStat(${player.id}, 'freeThrowAttempted', true)">FT Mis</button>
                     </div>
 
                     <!-- Rebound Statistieken -->
                     <div class="stat-group">
                         <div class="stat-button">
-                            <div class="stat-label">🏀 REBOUNDS</div>
+                            <div class="stat-label">REBOUNDS</div>
                             <div class="stat-value">[${player.stats.defensiveRebounds} - ${player.stats.offensiveRebounds}]</div>
                             <div class="rebound-display">DEF - OFF</div>
                             <div class="stat-controls">
@@ -1029,13 +1029,13 @@
                             player.stats.assists,
                             `updateStat(${player.id}, 'assists', true)`,
                             `updateStat(${player.id}, 'assists', false)`,
-                            '🤝 ASS'
+                            'ASS'
                         )}
                         ${createStatButton(
                             player.stats.steals,
                             `updateStat(${player.id}, 'steals', true)`,
                             `updateStat(${player.id}, 'steals', false)`,
-                            '💨 STL'
+                            'STL'
                         )}
                     </div>
 
@@ -1045,13 +1045,13 @@
                             player.stats.blocks,
                             `updateStat(${player.id}, 'blocks', true)`,
                             `updateStat(${player.id}, 'blocks', false)`,
-                            '🚫 BLK'
+                            'BLK'
                         )}
                         ${createStatButton(
                             player.stats.turnovers,
                             `updateStat(${player.id}, 'turnovers', true)`,
                             `updateStat(${player.id}, 'turnovers', false)`,
-                            '😬 BAL'
+                            'TOV'
                         )}
                         <div></div>
                     </div>
@@ -1066,7 +1066,7 @@
             
             container.innerHTML = `
                 <div class="sidebar-section">
-                    <div class="sidebar-section-title court-indicator">🏀 Op het Veld (${courtPlayers.length}/5)</div>
+                    <div class="sidebar-section-title court-indicator">Op het Veld (${courtPlayers.length}/5)</div>
                     <div class="player-list court-players">
                         ${courtPlayers.map(player => `
                             <div class="player-item">
@@ -1081,7 +1081,7 @@
                 </div>
                 
                 <div class="sidebar-section">
-                    <div class="sidebar-section-title bench-indicator">💺 Op de Bank (${benchPlayers.length})</div>
+                    <div class="sidebar-section-title bench-indicator">Op de Bank (${benchPlayers.length})</div>
                     <div class="player-list">
                         ${benchPlayers.map(player => `
                             <div class="player-item">

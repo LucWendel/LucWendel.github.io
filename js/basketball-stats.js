@@ -34,6 +34,9 @@ let editingPlayerId = null; // Voor edit functionaliteit
 // Track last shot action per player to handle correct undo
 let lastShotActions = {};
 
+// Track all actions for global undo functionality
+let actionHistory = [];
+
 // Add substitute player
 function addSubstitute() {
     const nameInput = document.getElementById('substituteName');
@@ -156,10 +159,74 @@ function trackShotAction(playerId, shotType, wasMade) {
     lastShotActions[playerId][shotType] = wasMade;
 }
 
+// Add action to history for global undo
+function addActionToHistory(action) {
+    actionHistory.push({
+        ...action,
+        timestamp: Date.now()
+    });
+    
+    // Keep only last 20 actions to prevent memory issues
+    if (actionHistory.length > 20) {
+        actionHistory.shift();
+    }
+}
+
+// Undo last action globally
+function undoLastAction() {
+    if (actionHistory.length === 0) {
+        alert('Geen acties om ongedaan te maken!');
+        return;
+    }
+    
+    const lastAction = actionHistory.pop();
+    const allPlayers = getAllPlayers();
+    const player = allPlayers.find(p => p.id === lastAction.playerId);
+    
+    if (!player) return;
+    
+    // Reverse the action
+    switch(lastAction.type) {
+        case 'stat':
+            player.stats[lastAction.statKey] = Math.max(0, player.stats[lastAction.statKey] - 1);
+            break;
+        case 'shot_made':
+            player.stats[lastAction.shotType + 'Made'] = Math.max(0, player.stats[lastAction.shotType + 'Made'] - 1);
+            player.stats[lastAction.shotType + 'Attempted'] = Math.max(0, player.stats[lastAction.shotType + 'Attempted'] - 1);
+            break;
+        case 'shot_missed':
+            player.stats[lastAction.shotType + 'Attempted'] = Math.max(0, player.stats[lastAction.shotType + 'Attempted'] - 1);
+            break;
+        case 'rebound':
+            const reboundKey = lastAction.reboundType === 'defensive' ? 'defensiveRebounds' : 'offensiveRebounds';
+            player.stats[reboundKey] = Math.max(0, player.stats[reboundKey] - 1);
+            break;
+        case 'statsEdit':
+            // Restore all original stats for edit actions
+            player.stats = { ...lastAction.originalStats };
+            break;
+    }
+    
+    renderGameStats();
+    renderSidebar();
+    
+    alert(`Actie ongedaan gemaakt: ${lastAction.playerName}`);
+}
+
 // Handle shot miss (only increment attempted)
 function addShotMiss(playerId, shotType) {
     updateStat(playerId, shotType + 'Attempted', true);
     trackShotAction(playerId, shotType, false);
+    
+    // Add to action history
+    const allPlayers = getAllPlayers();
+    const player = allPlayers.find(p => p.id === playerId);
+    addActionToHistory({
+        type: 'shot_missed',
+        playerId: playerId,
+        shotType: shotType,
+        playerName: player.name
+    });
 }
 
 // Undo last shot action correctly
@@ -209,7 +276,23 @@ function updateStat(playerId, statKey, increment) {
     const player = allPlayers.find(p => p.id === playerId);
     if (player) {
         const currentValue = player.stats[statKey];
-        player.stats[statKey] = Math.max(0, currentValue + (increment ? 1 : -1));
+        const newValue = Math.max(0, currentValue + (increment ? 1 : -1));
+        
+        // Only update if value actually changes and we're incrementing
+        if (newValue !== currentValue && increment) {
+            player.stats[statKey] = newValue;
+            
+            // Add to action history
+            addActionToHistory({
+                type: 'stat',
+                playerId: playerId,
+                statKey: statKey,
+                playerName: player.name
+            });
+        } else if (!increment && currentValue > 0) {
+            player.stats[statKey] = newValue;
+        }
+        
         renderGameStats();
         renderSidebar();
     }
@@ -369,6 +452,8 @@ function hideAssistModal() {
 
 function confirmAssist(assistPlayerId) {
     const { playerId, statType } = currentAssistContext;
+    const allPlayers = getAllPlayers();
+    const player = allPlayers.find(p => p.id === playerId);
     
     // Update the scorer's stats
     updateStat(playerId, statType + 'Made', true);
@@ -376,6 +461,14 @@ function confirmAssist(assistPlayerId) {
     
     // Track that this was a made shot
     trackShotAction(playerId, statType, true);
+    
+    // Add shot made to action history
+    addActionToHistory({
+        type: 'shot_made',
+        playerId: playerId,
+        shotType: statType,
+        playerName: player.name
+    });
     
     // Update the assist
     if (assistPlayerId !== null) {
@@ -387,6 +480,8 @@ function confirmAssist(assistPlayerId) {
 
 function confirmNoAssist() {
     const { playerId, statType } = currentAssistContext;
+    const allPlayers = getAllPlayers();
+    const player = allPlayers.find(p => p.id === playerId);
     
     // Update only the scorer's stats
     updateStat(playerId, statType + 'Made', true);
@@ -394,6 +489,14 @@ function confirmNoAssist() {
     
     // Track that this was a made shot
     trackShotAction(playerId, statType, true);
+    
+    // Add shot made to action history
+    addActionToHistory({
+        type: 'shot_made',
+        playerId: playerId,
+        shotType: statType,
+        playerName: player.name
+    });
     
     hideAssistModal();
 }
@@ -412,6 +515,16 @@ function confirmRebound(type) {
     if (currentReboundPlayerId !== null) {
         const statKey = type === 'defensive' ? 'defensiveRebounds' : 'offensiveRebounds';
         updateStat(currentReboundPlayerId, statKey, true);
+        
+        // Add to action history
+        const allPlayers = getAllPlayers();
+        const player = allPlayers.find(p => p.id === currentReboundPlayerId);
+        addActionToHistory({
+            type: 'rebound',
+            playerId: currentReboundPlayerId,
+            reboundType: type,
+            playerName: player.name
+        });
     }
     hideReboundModal();
 }
@@ -1067,19 +1180,65 @@ function saveEditedStats() {
     const allPlayers = getAllPlayers();
     const player = allPlayers.find(p => p.id === editingPlayerId);
     
+    // Store original stats for action tracking
+    const originalStats = { ...player.stats };
+    
+    // Get values from form inputs
+    let twoPointMade = parseInt(document.getElementById('edit_twoPointMade').value) || 0;
+    let twoPointAttempted = parseInt(document.getElementById('edit_twoPointAttempted').value) || 0;
+    let threePointMade = parseInt(document.getElementById('edit_threePointMade').value) || 0;
+    let threePointAttempted = parseInt(document.getElementById('edit_threePointAttempted').value) || 0;
+    let freeThrowMade = parseInt(document.getElementById('edit_freeThrowMade').value) || 0;
+    let freeThrowAttempted = parseInt(document.getElementById('edit_freeThrowAttempted').value) || 0;
+    
+    // Validate and auto-correct shooting stats
+    if (twoPointMade > twoPointAttempted) {
+        twoPointAttempted = twoPointMade;
+        document.getElementById('edit_twoPointAttempted').value = twoPointAttempted;
+    }
+    
+    if (threePointMade > threePointAttempted) {
+        threePointAttempted = threePointMade;
+        document.getElementById('edit_threePointAttempted').value = threePointAttempted;
+    }
+    
+    if (freeThrowMade > freeThrowAttempted) {
+        freeThrowAttempted = freeThrowMade;
+        document.getElementById('edit_freeThrowAttempted').value = freeThrowAttempted;
+    }
+    
+    // Show warning if corrections were made
+    const originalTwoAtt = parseInt(document.getElementById('edit_twoPointAttempted').dataset.original) || twoPointAttempted;
+    const originalThreeAtt = parseInt(document.getElementById('edit_threePointAttempted').dataset.original) || threePointAttempted;
+    const originalFreeAtt = parseInt(document.getElementById('edit_freeThrowAttempted').dataset.original) || freeThrowAttempted;
+    
+    if (twoPointMade > originalTwoAtt || threePointMade > originalThreeAtt || freeThrowMade > originalFreeAtt) {
+        alert('Let op: Aantal pogingen is automatisch aangepast omdat je niet meer kunt scoren dan proberen!');
+        return; // Let user see the corrections before saving
+    }
+    
     // Update all stats from form inputs
-    player.stats.twoPointMade = parseInt(document.getElementById('edit_twoPointMade').value) || 0;
-    player.stats.twoPointAttempted = parseInt(document.getElementById('edit_twoPointAttempted').value) || 0;
-    player.stats.threePointMade = parseInt(document.getElementById('edit_threePointMade').value) || 0;
-    player.stats.threePointAttempted = parseInt(document.getElementById('edit_threePointAttempted').value) || 0;
-    player.stats.freeThrowMade = parseInt(document.getElementById('edit_freeThrowMade').value) || 0;
-    player.stats.freeThrowAttempted = parseInt(document.getElementById('edit_freeThrowAttempted').value) || 0;
+    player.stats.twoPointMade = twoPointMade;
+    player.stats.twoPointAttempted = twoPointAttempted;
+    player.stats.threePointMade = threePointMade;
+    player.stats.threePointAttempted = threePointAttempted;
+    player.stats.freeThrowMade = freeThrowMade;
+    player.stats.freeThrowAttempted = freeThrowAttempted;
     player.stats.defensiveRebounds = parseInt(document.getElementById('edit_defensiveRebounds').value) || 0;
     player.stats.offensiveRebounds = parseInt(document.getElementById('edit_offensiveRebounds').value) || 0;
     player.stats.assists = parseInt(document.getElementById('edit_assists').value) || 0;
     player.stats.steals = parseInt(document.getElementById('edit_steals').value) || 0;
     player.stats.blocks = parseInt(document.getElementById('edit_blocks').value) || 0;
     player.stats.turnovers = parseInt(document.getElementById('edit_turnovers').value) || 0;
+    
+    // Add to action history
+    addActionToHistory({
+        type: 'statsEdit',
+        playerId: editingPlayerId,
+        playerName: player.name,
+        originalStats: originalStats,
+        newStats: { ...player.stats }
+    });
     
     // Re-render everything
     renderGameStats();
@@ -1114,6 +1273,224 @@ function exportGameData() {
     URL.revokeObjectURL(url);
     
     alert('Data geëxporteerd! Check je Downloads folder.');
+}
+
+// Import game data from JSON file
+function importGameData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    
+    input.onchange = function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                
+                // Validate imported data structure
+                if (!importedData.games || !Array.isArray(importedData.games)) {
+                    alert('Ongeldig bestand! Geen wedstrijd data gevonden.');
+                    return;
+                }
+                
+                // Ask user what to do with existing data
+                const action = confirm(
+                    `Import ${importedData.totalGames || importedData.games.length} wedstrijden?\n\n` +
+                    `Klik "OK" om toe te voegen aan bestaande data\n` +
+                    `Klik "Annuleren" om te vervangen`
+                );
+                
+                if (action) {
+                    // Add to existing data
+                    gameHistory.push(...importedData.games);
+                } else {
+                    // Replace existing data
+                    gameHistory = importedData.games;
+                }
+                
+                saveGameHistory();
+                alert(`Data geïmporteerd! ${importedData.games.length} wedstrijden geladen.`);
+                
+                // Refresh display if in history view
+                if (!document.getElementById('historyModal').classList.contains('hidden')) {
+                    showGameHistory();
+                }
+            } catch (error) {
+                alert('Fout bij importeren: Ongeldig JSON bestand!');
+                console.error('Import error:', error);
+            }
+        };
+        reader.readAsText(file);
+    };
+    
+    input.click();
+}
+
+// Show database management interface
+function showDatabaseManager() {
+    const modal = document.getElementById('historyModal');
+    const content = document.getElementById('historyContent');
+    
+    content.innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+            <h4 style="margin-bottom: 20px;">Database Beheer</h4>
+            
+            <div style="display: grid; gap: 16px; max-width: 400px; margin: 0 auto;">
+                <div style="border: 2px solid #f0f0f0; border-radius: 8px; padding: 16px;">
+                    <h5 style="margin-bottom: 12px;">📁 Lokale Data</h5>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 16px;">
+                        ${gameHistory.length} wedstrijden opgeslagen
+                    </p>
+                    <div style="display: flex; gap: 8px; justify-content: center;">
+                        <button class="btn btn-small" onclick="exportGameData()">Export</button>
+                        <button class="btn btn-small" onclick="importGameData()">Import</button>
+                    </div>
+                </div>
+                
+                <div style="border: 2px solid #f0f0f0; border-radius: 8px; padding: 16px;">
+                    <h5 style="margin-bottom: 12px;">☁️ Cloud Backup</h5>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 16px;">
+                        Sync tussen devices via GitHub
+                    </p>
+                    <div style="display: flex; gap: 8px; justify-content: center;">
+                        <button class="btn btn-small" onclick="uploadToGitHub()">Upload</button>
+                        <button class="btn btn-small" onclick="downloadFromGitHub()">Download</button>
+                    </div>
+                </div>
+                
+                <div style="border: 2px solid #ffe6e6; border-radius: 8px; padding: 16px;">
+                    <h5 style="margin-bottom: 12px; color: #d9534f;">⚠️ Reset Data</h5>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 16px;">
+                        Verwijder alle opgeslagen wedstrijden
+                    </p>
+                    <button class="btn btn-small" onclick="clearAllData()" style="background: #d9534f; color: white;">Wis Alles</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    modal.classList.remove('hidden');
+}
+
+// Clear all stored data
+function clearAllData() {
+    if (confirm('Weet je zeker dat je ALLE data wilt wissen? Dit kan niet ongedaan gemaakt worden!')) {
+        gameHistory = [];
+        saveGameHistory();
+        localStorage.clear();
+        alert('Alle data gewist!');
+        showDatabaseManager();
+    }
+}
+
+// GitHub integration for cloud storage
+const GITHUB_CONFIG = {
+    owner: 'LucWendel',
+    repo: 'LucWendel.github.io',
+    branch: 'master',
+    dataPath: 'data/basketball-stats.json'
+};
+
+// Upload data to GitHub
+async function uploadToGitHub() {
+    try {
+        const exportData = {
+            exportDate: new Date().toISOString(),
+            totalGames: gameHistory.length,
+            games: gameHistory
+        };
+        
+        const content = btoa(JSON.stringify(exportData, null, 2));
+        
+        // For now, create a downloadable file with GitHub upload instructions
+        const instructions = `
+# Basketball Stats Data Upload
+
+## Stap 1: Download deze data
+De data hieronder moet geupload worden naar je GitHub repository.
+
+## Stap 2: Upload naar GitHub
+1. Ga naar: https://github.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}
+2. Maak een nieuwe folder aan: "data"
+3. Upload een nieuw bestand: "basketball-stats.json"
+4. Plak de onderstaande content erin
+
+## Data:
+\`\`\`json
+${JSON.stringify(exportData, null, 2)}
+\`\`\`
+
+## Stap 3: Commit
+Commit de changes naar je repository.
+        `;
+        
+        const blob = new Blob([instructions], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'github-upload-instructions.md';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        alert('Upload instructies gedownload! Volg de stappen in het bestand.');
+        
+    } catch (error) {
+        console.error('GitHub upload error:', error);
+        alert('Fout bij uploaden naar GitHub. Check de console voor details.');
+    }
+}
+
+// Download data from GitHub
+async function downloadFromGitHub() {
+    try {
+        const url = `https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${GITHUB_CONFIG.dataPath}`;
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            if (response.status === 404) {
+                alert('Geen data gevonden op GitHub. Upload eerst data!');
+                return;
+            }
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const cloudData = await response.json();
+        
+        if (!cloudData.games || !Array.isArray(cloudData.games)) {
+            alert('Ongeldige data structuur op GitHub!');
+            return;
+        }
+        
+        // Compare with local data
+        const cloudDate = new Date(cloudData.exportDate);
+        const localData = gameHistory.length;
+        
+        const action = confirm(
+            `GitHub data gevonden!\n\n` +
+            `Cloud: ${cloudData.totalGames} wedstrijden (${cloudDate.toLocaleDateString()})\n` +
+            `Lokaal: ${localData} wedstrijden\n\n` +
+            `Klik "OK" om cloud data te downloaden en lokale data te vervangen\n` +
+            `Klik "Annuleren" om te stoppen`
+        );
+        
+        if (action) {
+            gameHistory = cloudData.games;
+            saveGameHistory();
+            alert(`Cloud data geladen! ${cloudData.totalGames} wedstrijden geïmporteerd.`);
+            showDatabaseManager();
+        }
+        
+    } catch (error) {
+        console.error('GitHub download error:', error);
+        alert('Fout bij downloaden van GitHub: ' + error.message);
+    }
 }
 
 // Close modal when clicking outside

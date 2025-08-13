@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball Stats Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff6600;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: #666;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus {
+            border-color: #ff6600;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #ff6600;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .login-btn:hover {
+            background: #e55a00;
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+
+        .dashboard {
+            display: none;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff6600;
+        }
+
+        .dashboard-stats {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ff6600, #e55a00);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .content-tabs {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .tab-header {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: #ff6600;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 24px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .games-grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .game-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .game-card:hover {
+            border-color: #ff6600;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 102, 0, 0.1);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .game-date {
+            font-weight: bold;
+            color: #ff6600;
+            font-size: 1.1rem;
+        }
+
+        .game-score {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .game-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .game-stat {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+
+        .game-stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .game-stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .players-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .players-table th {
+            background: #ff6600;
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .players-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+
+        .players-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .top-scorer {
+            background: linear-gradient(135deg, #ffd700, #ffed4e) !important;
+            font-weight: bold;
+        }
+
+        .player-stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .player-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .player-card:hover {
+            border-color: #ff6600;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 102, 0, 0.1);
+        }
+
+        .player-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ff6600;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .player-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .player-stat {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .refresh-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: 12px;
+        }
+
+        .refresh-btn:hover {
+            background: #218838;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                text-align: center;
+            }
+
+            .dashboard-stats {
+                justify-content: center;
+            }
+
+            .tab-header {
+                flex-direction: column;
+            }
+
+            .game-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .players-table {
+                font-size: 12px;
+            }
+
+            .players-table th,
+            .players-table td {
+                padding: 8px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <h1 class="login-title">Admin Dashboard</h1>
+            <p class="login-subtitle">Basketball Statistics Management</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="username">Gebruikersnaam</label>
+                    <input type="text" id="username" class="form-input" placeholder="Voer gebruikersnaam in" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">Wachtwoord</label>
+                    <input type="password" id="password" class="form-input" placeholder="Voer wachtwoord in" required>
+                </div>
+                
+                <button type="submit" class="login-btn">Inloggen</button>
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Basketball Stats Dashboard</h1>
+            </div>
+            <div class="dashboard-stats" id="dashboardStats">
+                <!-- Stats will be inserted here -->
+            </div>
+            <div>
+                <button class="refresh-btn" onclick="loadAllData()">Ververs Data</button>
+                <button class="logout-btn" onclick="logout()">Uitloggen</button>
+            </div>
+        </div>
+
+        <!-- Content Tabs -->
+        <div class="content-tabs">
+            <div class="tab-header">
+                <button class="tab-btn active" onclick="switchTab('games')">Wedstrijden Overzicht</button>
+                <button class="tab-btn" onclick="switchTab('players')">Speler Statistieken</button>
+                <button class="tab-btn" onclick="switchTab('analytics')">Analytics</button>
+            </div>
+
+            <!-- Games Tab -->
+            <div id="gamesTab" class="tab-content active">
+                <div id="gamesContent">
+                    <!-- Games content will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Players Tab -->
+            <div id="playersTab" class="tab-content">
+                <div id="playersContent">
+                    <!-- Players content will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analyticsTab" class="tab-content">
+                <div id="analyticsContent">
+                    <!-- Analytics content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allGamesData = [];
+        let currentTab = 'games';
+
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (username === 'Test' && password === 'Test') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                loadAllData();
+            } else {
+                errorMessage.textContent = 'Ongeldige gebruikersnaam of wachtwoord!';
+                errorMessage.style.display = 'block';
+                
+                // Clear error after 3 seconds
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            }
+        });
+
+        // Logout functionality
+        function logout() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Update active tab button
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update active tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            currentTab = tabName;
+            renderCurrentTab();
+        }
+
+        // Load data from multiple sources
+        async function loadAllData() {
+            try {
+                // Try to load from localStorage first
+                const localData = localStorage.getItem('basketballGameHistory');
+                if (localData) {
+                    try {
+                        allGamesData = JSON.parse(localData);
+                        console.log('Loaded data from localStorage:', allGamesData.length, 'games');
+                    } catch (e) {
+                        allGamesData = [];
+                    }
+                }
+
+                // Try to load from GitHub
+                try {
+                    const response = await fetch('https://raw.githubusercontent.com/LucWendel/LucWendel.github.io/master/data/basketball-stats.json');
+                    if (response.ok) {
+                        const cloudData = await response.json();
+                        if (cloudData.games && Array.isArray(cloudData.games)) {
+                            // Merge with local data (remove duplicates)
+                            const existingIds = allGamesData.map(game => game.id);
+                            const newGames = cloudData.games.filter(game => !existingIds.includes(game.id));
+                            allGamesData = [...allGamesData, ...newGames];
+                            console.log('Merged with cloud data. Total games:', allGamesData.length);
+                        }
+                    }
+                } catch (error) {
+                    console.log('Could not load cloud data:', error.message);
+                }
+
+                updateDashboardStats();
+                renderCurrentTab();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                allGamesData = [];
+                updateDashboardStats();
+                renderCurrentTab();
+            }
+        }
+
+        // Update dashboard statistics
+        function updateDashboardStats() {
+            const totalGames = allGamesData.length;
+            const totalPoints = allGamesData.reduce((sum, game) => sum + (game.teamScore || 0), 0);
+            const avgPoints = totalGames > 0 ? (totalPoints / totalGames).toFixed(1) : 0;
+            
+            // Get all unique players
+            const allPlayers = new Set();
+            allGamesData.forEach(game => {
+                if (game.players) {
+                    game.players.forEach(player => allPlayers.add(player.name));
+                }
+            });
+
+            document.getElementById('dashboardStats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalGames}</div>
+                    <div class="stat-label">Wedstrijden</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalPoints}</div>
+                    <div class="stat-label">Totaal Punten</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${avgPoints}</div>
+                    <div class="stat-label">Gem. Punten</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${allPlayers.size}</div>
+                    <div class="stat-label">Spelers</div>
+                </div>
+            `;
+        }
+
+        // Render current tab content
+        function renderCurrentTab() {
+            switch (currentTab) {
+                case 'games':
+                    renderGamesTab();
+                    break;
+                case 'players':
+                    renderPlayersTab();
+                    break;
+                case 'analytics':
+                    renderAnalyticsTab();
+                    break;
+            }
+        }
+
+        // Render games tab
+        function renderGamesTab() {
+            const container = document.getElementById('gamesContent');
+            
+            if (allGamesData.length === 0) {
+                container.innerHTML = '<div class="no-data">Geen wedstrijddata gevonden. Laad eerst data via de basketball app.</div>';
+                return;
+            }
+
+            // Sort games by date (newest first)
+            const sortedGames = [...allGamesData].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            container.innerHTML = `
+                <div class="games-grid">
+                    ${sortedGames.map(game => {
+                        const date = new Date(game.date).toLocaleDateString('nl-NL', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        const time = new Date(game.date).toLocaleTimeString('nl-NL', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+
+                        const teamTotals = game.players ? game.players.reduce((totals, player) => {
+                            totals.assists += player.stats.assists || 0;
+                            totals.rebounds += (player.stats.defensiveRebounds || 0) + (player.stats.offensiveRebounds || 0);
+                            totals.steals += player.stats.steals || 0;
+                            totals.blocks += player.stats.blocks || 0;
+                            totals.turnovers += player.stats.turnovers || 0;
+                            totals.fgMade += (player.stats.twoPointMade || 0) + (player.stats.threePointMade || 0);
+                            totals.fgAttempted += (player.stats.twoPointAttempted || 0) + (player.stats.threePointAttempted || 0);
+                            return totals;
+                        }, {
+                            assists: 0, rebounds: 0, steals: 0, blocks: 0, turnovers: 0,
+                            fgMade: 0, fgAttempted: 0
+                        }) : { assists: 0, rebounds: 0, steals: 0, blocks: 0, turnovers: 0, fgMade: 0, fgAttempted: 0 };
+
+                        const fgPct = teamTotals.fgAttempted > 0 ? 
+                            ((teamTotals.fgMade / teamTotals.fgAttempted) * 100).toFixed(1) : '0';
+
+                        const topScorer = game.players && game.players.length > 0 ? 
+                            game.players.reduce((top, player) => 
+                                (player.points || 0) > (top.points || 0) ? player : top, game.players[0]) : null;
+
+                        return `
+                            <div class="game-card">
+                                <div class="game-header">
+                                    <div>
+                                        <div class="game-date">${date}</div>
+                                        <div style="color: #666; font-size: 14px;">${time}</div>
+                                    </div>
+                                    <div class="game-score">${game.teamScore || 0} punten</div>
+                                </div>
+
+                                <div class="game-stats">
+                                    <div class="game-stat">
+                                        <div class="game-stat-value">${teamTotals.assists}</div>
+                                        <div class="game-stat-label">Assists</div>
+                                    </div>
+                                    <div class="game-stat">
+                                        <div class="game-stat-value">${teamTotals.rebounds}</div>
+                                        <div class="game-stat-label">Rebounds</div>
+                                    </div>
+                                    <div class="game-stat">
+                                        <div class="game-stat-value">${teamTotals.steals}</div>
+                                        <div class="game-stat-label">Steals</div>
+                                    </div>
+                                    <div class="game-stat">
+                                        <div class="game-stat-value">${fgPct}%</div>
+                                        <div class="game-stat-label">FG%</div>
+                                    </div>
+                                </div>
+
+                                ${topScorer ? `
+                                    <div style="margin-bottom: 16px; text-align: center; padding: 12px; background: linear-gradient(135deg, #ffd700, #ffed4e); border-radius: 8px;">
+                                        <strong>Top Scorer: ${topScorer.name} (${topScorer.points || 0} punten)</strong>
+                                    </div>
+                                ` : ''}
+
+                                ${game.players && game.players.length > 0 ? `
+                                    <table class="players-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Speler</th>
+                                                <th>PTS</th>
+                                                <th>AST</th>
+                                                <th>REB</th>
+                                                <th>STL</th>
+                                                <th>BLK</th>
+                                                <th>TO</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${game.players.map(player => `
+                                                <tr ${player === topScorer ? 'class="top-scorer"' : ''}>
+                                                    <td><strong>${player.name}</strong> ${player.number ? `#${player.number}` : ''}</td>
+                                                    <td>${player.points || 0}</td>
+                                                    <td>${player.stats.assists || 0}</td>
+                                                    <td>${(player.stats.defensiveRebounds || 0) + (player.stats.offensiveRebounds || 0)}</td>
+                                                    <td>${player.stats.steals || 0}</td>
+                                                    <td>${player.stats.blocks || 0}</td>
+                                                    <td>${player.stats.turnovers || 0}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                ` : '<div style="text-align: center; padding: 20px; color: #666;">Geen speler data beschikbaar</div>'}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        // Render players tab
+        function renderPlayersTab() {
+            const container = document.getElementById('playersContent');
+            
+            if (allGamesData.length === 0) {
+                container.innerHTML = '<div class="no-data">Geen spelerdata gevonden. Laad eerst data via de basketball app.</div>';
+                return;
+            }
+
+            // Aggregate player statistics across all games
+            const playerStats = {};
+            
+            allGamesData.forEach(game => {
+                if (game.players) {
+                    game.players.forEach(player => {
+                        if (!playerStats[player.name]) {
+                            playerStats[player.name] = {
+                                name: player.name,
+                                games: 0,
+                                totalPoints: 0,
+                                totalAssists: 0,
+                                totalRebounds: 0,
+                                totalSteals: 0,
+                                totalBlocks: 0,
+                                totalTurnovers: 0,
+                                twoPointMade: 0,
+                                twoPointAttempted: 0,
+                                threePointMade: 0,
+                                threePointAttempted: 0,
+                                freeThrowMade: 0,
+                                freeThrowAttempted: 0
+                            };
+                        }
+
+                        const stats = playerStats[player.name];
+                        stats.games++;
+                        stats.totalPoints += player.points || 0;
+                        stats.totalAssists += player.stats.assists || 0;
+                        stats.totalRebounds += (player.stats.defensiveRebounds || 0) + (player.stats.offensiveRebounds || 0);
+                        stats.totalSteals += player.stats.steals || 0;
+                        stats.totalBlocks += player.stats.blocks || 0;
+                        stats.totalTurnovers += player.stats.turnovers || 0;
+                        stats.twoPointMade += player.stats.twoPointMade || 0;
+                        stats.twoPointAttempted += player.stats.twoPointAttempted || 0;
+                        stats.threePointMade += player.stats.threePointMade || 0;
+                        stats.threePointAttempted += player.stats.threePointAttempted || 0;
+                        stats.freeThrowMade += player.stats.freeThrowMade || 0;
+                        stats.freeThrowAttempted += player.stats.freeThrowAttempted || 0;
+                    });
+                }
+            });
+
+            const playersArray = Object.values(playerStats).sort((a, b) => b.totalPoints - a.totalPoints);
+
+            container.innerHTML = `
+                <div class="player-stats-overview">
+                    ${playersArray.map(player => {
+                        const avgPoints = (player.totalPoints / player.games).toFixed(1);
+                        const avgAssists = (player.totalAssists / player.games).toFixed(1);
+                        const avgRebounds = (player.totalRebounds / player.games).toFixed(1);
+                        
+                        const fgMade = player.twoPointMade + player.threePointMade;
+                        const fgAttempted = player.twoPointAttempted + player.threePointAttempted;
+                        const fgPct = fgAttempted > 0 ? ((fgMade / fgAttempted) * 100).toFixed(1) : '0';
+                        
+                        const threePct = player.threePointAttempted > 0 ? 
+                            ((player.threePointMade / player.threePointAttempted) * 100).toFixed(1) : '0';
+                        
+                        const ftPct = player.freeThrowAttempted > 0 ? 
+                            ((player.freeThrowMade / player.freeThrowAttempted) * 100).toFixed(1) : '0';
+
+                        return `
+                            <div class="player-card">
+                                <div class="player-name">${player.name}</div>
+                                <div style="text-align: center; margin-bottom: 16px; color: #666;">
+                                    ${player.games} wedstrijd${player.games !== 1 ? 'en' : ''}
+                                </div>
+                                
+                                <div class="player-stats-grid">
+                                    <div class="player-stat">
+                                        <div class="game-stat-value">${player.totalPoints}</div>
+                                        <div class="game-stat-label">Totaal PTS</div>
+                                    </div>
+                                    <div class="player-stat">
+                                        <div class="game-stat-value">${avgPoints}</div>
+                                        <div class="game-stat-label">Gem. PTS</div>
+                                    </div>
+                                    <div class="player-stat">
+                                        <div class="game-stat-value">${fgPct}%</div>
+                                        <div class="game-stat-label">FG%</div>
+                                    </div>
+                                    
+                                    <div class="player-stat">
+                                        <div class="game-stat-value">${player.totalAssists}</div>
+                                        <div class="game-stat-label">Totaal AST</div>
+                                    </div>
+                                    <div class="player-stat">
+                                        <div class="game-stat-value">${avgAssists}</div>
+                                        <div class="game-stat-label">Gem. AST</div>
+                                    </div>
+                                    <div class="player-stat">
+                                        <div class="game-stat-value">${threePct}%</div>
+                                        <div class="game-stat-label">3PT%</div>
+                                    </div>
+                                    
+                                    <div class="player-stat">
+                                        <div class="game-stat-value">${player.totalRebounds}</div>
+                                        <div class="game-stat-label">Totaal REB</div>
+                                    </div>
+                                    <div class="player-stat">
+                                        <div class="game-stat-value">${avgRebounds}</div>
+                                        <div class="game-stat-label">Gem. REB</div>
+                                    </div>
+                                    <div class="player-stat">
+                                        <div class="game-stat-value">${ftPct}%</div>
+                                        <div class="game-stat-label">FT%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        // Render analytics tab
+        function renderAnalyticsTab() {
+            const container = document.getElementById('analyticsContent');
+            
+            if (allGamesData.length === 0) {
+                container.innerHTML = '<div class="no-data">Geen data voor analytics. Laad eerst data via de basketball app.</div>';
+                return;
+            }
+
+            // Calculate comprehensive team and player analytics
+            const analytics = calculateTeamAnalytics();
+            const playerAnalytics = calculatePlayerAnalytics();
+            const attendanceAnalytics = calculateAttendanceAnalytics();
+
+            container.innerHTML = `
+                <div style="margin-bottom: 24px;">
+                    <h2 style="color: #ff6600; margin-bottom: 16px; text-align: center;">Coach Analytics Dashboard</h2>
+                    <p style="text-align: center; color: #666; margin-bottom: 32px;">
+                        Uitgebreide analyse voor coaching strategieën en team ontwikkeling
+                    </p>
+                </div>
+
+                <!-- Team Performance Overview -->
+                <div class="game-card" style="margin-bottom: 24px;">
+                    <h3 style="color: #ff6600; margin-bottom: 16px;">Team Prestatie Overzicht</h3>
+                    <div class="game-stats">
+                        <div class="game-stat">
+                            <div class="game-stat-value">${analytics.avgPoints}</div>
+                            <div class="game-stat-label">Gem. Punten</div>
+                        </div>
+                        <div class="game-stat">
+                            <div class="game-stat-value">${analytics.avgAssists}</div>
+                            <div class="game-stat-label">Gem. Assists</div>
+                        </div>
+                        <div class="game-stat">
+                            <div class="game-stat-value">${analytics.avgRebounds}</div>
+                            <div class="game-stat-label">Gem. Rebounds</div>
+                        </div>
+                        <div class="game-stat">
+                            <div class="game-stat-value">${analytics.teamFgPct}%</div>
+                            <div class="game-stat-label">Team FG%</div>
+                        </div>
+                        <div class="game-stat">
+                            <div class="game-stat-value">${analytics.avgTurnovers}</div>
+                            <div class="game-stat-label">Gem. Turnovers</div>
+                        </div>
+                        <div class="game-stat">
+                            <div class="game-stat-value">${analytics.assistToTurnoverRatio}</div>
+                            <div class="game-stat-label">AST/TO Ratio</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; margin-bottom: 24px;">
+                    
+                    <!-- Player Attendance & Consistency -->
+                    <div class="game-card">
+                        <h3 style="color: #ff6600; margin-bottom: 16px;">Speler Aanwezigheid & Consistentie</h3>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${attendanceAnalytics.map(player => `
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                                    <div>
+                                        <strong>${player.name}</strong>
+                                        <div style="font-size: 12px; color: #666;">
+                                            Consistentie: ${player.consistency}%
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-weight: bold; color: ${player.attendanceRate >= 80 ? '#28a745' : player.attendanceRate >= 60 ? '#ffc107' : '#dc3545'};">
+                                            ${player.gamesPlayed}/${analytics.totalGames}
+                                        </div>
+                                        <div style="font-size: 12px; color: #666;">
+                                            ${player.attendanceRate}%
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Top Performers by Category -->
+                    <div class="game-card">
+                        <h3 style="color: #ff6600; margin-bottom: 16px;">Top Performers per Categorie</h3>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                            <div>
+                                <h4 style="color: #333; margin-bottom: 8px; font-size: 14px;">Scoring Leaders</h4>
+                                ${playerAnalytics.topScorers.map((player, idx) => `
+                                    <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px;">
+                                        <span>${idx + 1}. ${player.name}</span>
+                                        <span><strong>${player.avgPoints}</strong> ppg</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div>
+                                <h4 style="color: #333; margin-bottom: 8px; font-size: 14px;">Assist Leaders</h4>
+                                ${playerAnalytics.topAssists.map((player, idx) => `
+                                    <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px;">
+                                        <span>${idx + 1}. ${player.name}</span>
+                                        <span><strong>${player.avgAssists}</strong> apg</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div>
+                                <h4 style="color: #333; margin-bottom: 8px; font-size: 14px;">Rebound Leaders</h4>
+                                ${playerAnalytics.topRebounders.map((player, idx) => `
+                                    <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px;">
+                                        <span>${idx + 1}. ${player.name}</span>
+                                        <span><strong>${player.avgRebounds}</strong> rpg</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div>
+                                <h4 style="color: #333; margin-bottom: 8px; font-size: 14px;">Efficiency Leaders</h4>
+                                ${playerAnalytics.topEfficiency.map((player, idx) => `
+                                    <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px;">
+                                        <span>${idx + 1}. ${player.name}</span>
+                                        <span><strong>${player.fgPct}%</strong> FG</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shooting Analysis -->
+                    <div class="game-card">
+                        <h3 style="color: #ff6600; margin-bottom: 16px;">Schot Analyse</h3>
+                        <div class="game-stats" style="grid-template-columns: repeat(2, 1fr);">
+                            <div class="game-stat">
+                                <div class="game-stat-value">${analytics.team2PtPct}%</div>
+                                <div class="game-stat-label">Team 2PT%</div>
+                            </div>
+                            <div class="game-stat">
+                                <div class="game-stat-value">${analytics.team3PtPct}%</div>
+                                <div class="game-stat-label">Team 3PT%</div>
+                            </div>
+                            <div class="game-stat">
+                                <div class="game-stat-value">${analytics.teamFtPct}%</div>
+                                <div class="game-stat-label">Team FT%</div>
+                            </div>
+                            <div class="game-stat">
+                                <div class="game-stat-value">${analytics.avg3PtAttempts}</div>
+                                <div class="game-stat-label">Gem. 3PT Pogingen</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 16px; padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                            <strong>Coach Tip:</strong> 
+                            ${analytics.team3PtPct < 30 ? 
+                                'Focus op 3-punt schot training. Percentage ligt onder het gemiddelde.' : 
+                                analytics.team3PtPct > 35 ? 
+                                'Uitstekende 3-punt prestatie! Blijf deze sterkte benutten.' :
+                                'Solide 3-punt percentage. Ruimte voor verbetering met extra training.'
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Team Chemistry & Teamwork -->
+                    <div class="game-card">
+                        <h3 style="color: #ff6600; margin-bottom: 16px;">Team Chemie & Samenspel</h3>
+                        <div class="game-stats" style="grid-template-columns: repeat(2, 1fr);">
+                            <div class="game-stat">
+                                <div class="game-stat-value" style="color: ${analytics.assistToTurnoverRatio >= 1.5 ? '#28a745' : analytics.assistToTurnoverRatio >= 1.0 ? '#ffc107' : '#dc3545'};">
+                                    ${analytics.assistToTurnoverRatio}
+                                </div>
+                                <div class="game-stat-label">AST/TO Ratio</div>
+                            </div>
+                            <div class="game-stat">
+                                <div class="game-stat-value">${analytics.ballMovement}</div>
+                                <div class="game-stat-label">Bal Beweging Score</div>
+                            </div>
+                            <div class="game-stat">
+                                <div class="game-stat-value">${analytics.teamDefense}</div>
+                                <div class="game-stat-label">Team Verdediging</div>
+                            </div>
+                            <div class="game-stat">
+                                <div class="game-stat-value">${analytics.scoringDistribution}%</div>
+                                <div class="game-stat-label">Score Verdeling</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 16px; padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                            <strong>Team Analyse:</strong> 
+                            ${analytics.assistToTurnoverRatio >= 1.5 ? 
+                                'Uitstekend teamspel! Het team speelt goed samen en maakt weinig fouten.' :
+                                analytics.assistToTurnoverRatio >= 1.0 ?
+                                'Goed teamspel, maar er is ruimte voor verbetering in balverzorging.' :
+                                'Focus nodig op teamspel en het verminderen van turnovers.'
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Performance Trends -->
+                    <div class="game-card">
+                        <h3 style="color: #ff6600; margin-bottom: 16px;">Prestatie Trends</h3>
+                        <div style="max-height: 250px; overflow-y: auto;">
+                            ${analytics.recentTrends.map((trend, idx) => `
+                                <div style="padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="font-weight: bold;">Wedstrijd ${idx + 1} (${trend.date})</span>
+                                        <span style="color: ${trend.performance >= 0 ? '#28a745' : '#dc3545'}; font-weight: bold;">
+                                            ${trend.performance >= 0 ? '+' : ''}${trend.performance}
+                                        </span>
+                                    </div>
+                                    <div style="font-size: 12px; color: #666; margin-top: 4px;">
+                                        ${trend.score} punten, ${trend.fgPct}% FG, ${trend.assists} assists
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Areas for Improvement -->
+                    <div class="game-card">
+                        <h3 style="color: #ff6600; margin-bottom: 16px;">Verbeterpunten</h3>
+                        <div style="space-y: 12px;">
+                            ${analytics.improvements.map(improvement => `
+                                <div style="padding: 12px; background: ${improvement.priority === 'high' ? '#fff3cd' : improvement.priority === 'medium' ? '#d1ecf1' : '#d4edda'}; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid ${improvement.priority === 'high' ? '#ffc107' : improvement.priority === 'medium' ? '#17a2b8' : '#28a745'};">
+                                    <div style="font-weight: bold; color: #333; margin-bottom: 4px;">
+                                        ${improvement.priority === 'high' ? '🔥 Hoge Prioriteit' : improvement.priority === 'medium' ? '⚡ Gemiddelde Prioriteit' : '✅ Lage Prioriteit'}
+                                    </div>
+                                    <div style="font-size: 14px; color: #666;">
+                                        ${improvement.description}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Calculate comprehensive team analytics
+        function calculateTeamAnalytics() {
+            const totalGames = allGamesData.length;
+            let totalPoints = 0, totalAssists = 0, totalRebounds = 0, totalTurnovers = 0;
+            let totalFgMade = 0, totalFgAttempted = 0;
+            let total2PtMade = 0, total2PtAttempted = 0;
+            let total3PtMade = 0, total3PtAttempted = 0;
+            let totalFtMade = 0, totalFtAttempted = 0;
+            let totalSteals = 0, totalBlocks = 0;
+
+            const recentTrends = [];
+
+            allGamesData.forEach((game, idx) => {
+                const gamePoints = game.teamScore || 0;
+                totalPoints += gamePoints;
+
+                let gameAssists = 0, gameRebounds = 0, gameTurnovers = 0;
+                let gameFgMade = 0, gameFgAttempted = 0;
+                let game2PtMade = 0, game2PtAttempted = 0;
+                let game3PtMade = 0, game3PtAttempted = 0;
+                let gameFtMade = 0, gameFtAttempted = 0;
+                let gameSteals = 0, gameBlocks = 0;
+
+                if (game.players) {
+                    game.players.forEach(player => {
+                        gameAssists += player.stats.assists || 0;
+                        gameRebounds += (player.stats.defensiveRebounds || 0) + (player.stats.offensiveRebounds || 0);
+                        gameTurnovers += player.stats.turnovers || 0;
+                        
+                        const playerFgMade = (player.stats.twoPointMade || 0) + (player.stats.threePointMade || 0);
+                        const playerFgAttempted = (player.stats.twoPointAttempted || 0) + (player.stats.threePointAttempted || 0);
+                        gameFgMade += playerFgMade;
+                        gameFgAttempted += playerFgAttempted;
+
+                        game2PtMade += player.stats.twoPointMade || 0;
+                        game2PtAttempted += player.stats.twoPointAttempted || 0;
+                        game3PtMade += player.stats.threePointMade || 0;
+                        game3PtAttempted += player.stats.threePointAttempted || 0;
+                        gameFtMade += player.stats.freeThrowMade || 0;
+                        gameFtAttempted += player.stats.freeThrowAttempted || 0;
+                        gameSteals += player.stats.steals || 0;
+                        gameBlocks += player.stats.blocks || 0;
+                    });
+                }
+
+                totalAssists += gameAssists;
+                totalRebounds += gameRebounds;
+                totalTurnovers += gameTurnovers;
+                totalFgMade += gameFgMade;
+                totalFgAttempted += gameFgAttempted;
+                total2PtMade += game2PtMade;
+                total2PtAttempted += game2PtAttempted;
+                total3PtMade += game3PtMade;
+                total3PtAttempted += game3PtAttempted;
+                totalFtMade += gameFtMade;
+                totalFtAttempted += gameFtAttempted;
+                totalSteals += gameSteals;
+                totalBlocks += gameBlocks;
+
+                // Calculate performance trend for recent games
+                if (idx < 5) {
+                    const gameFgPct = gameFgAttempted > 0 ? ((gameFgMade / gameFgAttempted) * 100).toFixed(1) : 0;
+                    const avgPoints = totalGames > 0 ? totalPoints / totalGames : 0;
+                    const performance = gamePoints - avgPoints;
+                    
+                    recentTrends.push({
+                        date: new Date(game.date).toLocaleDateString('nl-NL', { month: 'short', day: 'numeric' }),
+                        score: gamePoints,
+                        fgPct: gameFgPct,
+                        assists: gameAssists,
+                        performance: performance.toFixed(1)
+                    });
+                }
+            });
+
+            const avgPoints = totalGames > 0 ? (totalPoints / totalGames).toFixed(1) : 0;
+            const avgAssists = totalGames > 0 ? (totalAssists / totalGames).toFixed(1) : 0;
+            const avgRebounds = totalGames > 0 ? (totalRebounds / totalGames).toFixed(1) : 0;
+            const avgTurnovers = totalGames > 0 ? (totalTurnovers / totalGames).toFixed(1) : 0;
+            const teamFgPct = totalFgAttempted > 0 ? ((totalFgMade / totalFgAttempted) * 100).toFixed(1) : 0;
+            const team2PtPct = total2PtAttempted > 0 ? ((total2PtMade / total2PtAttempted) * 100).toFixed(1) : 0;
+            const team3PtPct = total3PtAttempted > 0 ? ((total3PtMade / total3PtAttempted) * 100).toFixed(1) : 0;
+            const teamFtPct = totalFtAttempted > 0 ? ((totalFtMade / totalFtAttempted) * 100).toFixed(1) : 0;
+            const avg3PtAttempts = totalGames > 0 ? (total3PtAttempted / totalGames).toFixed(1) : 0;
+            const assistToTurnoverRatio = totalTurnovers > 0 ? (totalAssists / totalTurnovers).toFixed(2) : 0;
+
+            // Calculate advanced metrics
+            const ballMovement = avgAssists > 15 ? 'Uitstekend' : avgAssists > 10 ? 'Goed' : 'Matig';
+            const teamDefense = (totalSteals + totalBlocks) / totalGames > 8 ? 'Sterk' : 'Gemiddeld';
+            
+            // Calculate scoring distribution (how evenly points are distributed among players)
+            let scoringDistribution = 0;
+            if (allGamesData.length > 0) {
+                const playerContributions = {};
+                allGamesData.forEach(game => {
+                    if (game.players) {
+                        game.players.forEach(player => {
+                            if (!playerContributions[player.name]) playerContributions[player.name] = 0;
+                            playerContributions[player.name] += player.points || 0;
+                        });
+                    }
+                });
+                
+                const contributions = Object.values(playerContributions);
+                if (contributions.length > 0) {
+                    const maxContribution = Math.max(...contributions);
+                    const avgContribution = contributions.reduce((sum, c) => sum + c, 0) / contributions.length;
+                    scoringDistribution = maxContribution > 0 ? ((avgContribution / maxContribution) * 100).toFixed(0) : 0;
+                }
+            }
+
+            // Generate improvement suggestions
+            const improvements = [];
+            
+            if (parseFloat(teamFgPct) < 40) {
+                improvements.push({
+                    priority: 'high',
+                    description: 'Schot percentage (FG%) ligt onder 40%. Focus op schot techniek training en betere schot selectie.'
+                });
+            }
+            
+            if (parseFloat(assistToTurnoverRatio) < 1.0) {
+                improvements.push({
+                    priority: 'high',
+                    description: 'Assist/Turnover ratio is laag. Werk aan balverzorging en besluitvorming onder druk.'
+                });
+            }
+            
+            if (parseFloat(team3PtPct) < 30) {
+                improvements.push({
+                    priority: 'medium',
+                    description: '3-punt percentage kan beter. Overweeg meer 3-punt schot training en betere spacing.'
+                });
+            }
+            
+            if (parseFloat(avgRebounds) < 35) {
+                improvements.push({
+                    priority: 'medium',
+                    description: 'Rebound statistieken kunnen verbeteren. Focus op box-out technieken en positionering.'
+                });
+            }
+            
+            if (parseFloat(scoringDistribution) < 60) {
+                improvements.push({
+                    priority: 'low',
+                    description: 'Score is erg afhankelijk van enkele spelers. Werk aan het ontwikkelen van meer scorende opties.'
+                });
+            }
+
+            if (improvements.length === 0) {
+                improvements.push({
+                    priority: 'low',
+                    description: 'Team presteert goed op alle gebieden! Blijf focussen op consistentie en team chemie.'
+                });
+            }
+
+            return {
+                totalGames,
+                avgPoints,
+                avgAssists,
+                avgRebounds,
+                avgTurnovers,
+                teamFgPct,
+                team2PtPct,
+                team3PtPct,
+                teamFtPct,
+                avg3PtAttempts,
+                assistToTurnoverRatio,
+                ballMovement,
+                teamDefense,
+                scoringDistribution,
+                recentTrends,
+                improvements
+            };
+        }
+
+        // Calculate player analytics
+        function calculatePlayerAnalytics() {
+            const playerStats = {};
+            
+            allGamesData.forEach(game => {
+                if (game.players) {
+                    game.players.forEach(player => {
+                        if (!playerStats[player.name]) {
+                            playerStats[player.name] = {
+                                name: player.name,
+                                games: 0,
+                                totalPoints: 0,
+                                totalAssists: 0,
+                                totalRebounds: 0,
+                                fgMade: 0,
+                                fgAttempted: 0
+                            };
+                        }
+
+                        const stats = playerStats[player.name];
+                        stats.games++;
+                        stats.totalPoints += player.points || 0;
+                        stats.totalAssists += player.stats.assists || 0;
+                        stats.totalRebounds += (player.stats.defensiveRebounds || 0) + (player.stats.offensiveRebounds || 0);
+                        stats.fgMade += (player.stats.twoPointMade || 0) + (player.stats.threePointMade || 0);
+                        stats.fgAttempted += (player.stats.twoPointAttempted || 0) + (player.stats.threePointAttempted || 0);
+                    });
+                }
+            });
+
+            const playersArray = Object.values(playerStats).map(player => ({
+                ...player,
+                avgPoints: (player.totalPoints / player.games).toFixed(1),
+                avgAssists: (player.totalAssists / player.games).toFixed(1),
+                avgRebounds: (player.totalRebounds / player.games).toFixed(1),
+                fgPct: player.fgAttempted > 0 ? ((player.fgMade / player.fgAttempted) * 100).toFixed(1) : 0
+            }));
+
+            return {
+                topScorers: playersArray.sort((a, b) => b.avgPoints - a.avgPoints).slice(0, 5),
+                topAssists: playersArray.sort((a, b) => b.avgAssists - a.avgAssists).slice(0, 5),
+                topRebounders: playersArray.sort((a, b) => b.avgRebounds - a.avgRebounds).slice(0, 5),
+                topEfficiency: playersArray.filter(p => p.fgAttempted >= 10).sort((a, b) => b.fgPct - a.fgPct).slice(0, 5)
+            };
+        }
+
+        // Calculate attendance analytics
+        function calculateAttendanceAnalytics() {
+            const playerAttendance = {};
+            const totalGames = allGamesData.length;
+            
+            allGamesData.forEach(game => {
+                if (game.players) {
+                    game.players.forEach(player => {
+                        if (!playerAttendance[player.name]) {
+                            playerAttendance[player.name] = {
+                                name: player.name,
+                                gamesPlayed: 0,
+                                performances: []
+                            };
+                        }
+                        playerAttendance[player.name].gamesPlayed++;
+                        playerAttendance[player.name].performances.push(player.points || 0);
+                    });
+                }
+            });
+
+            return Object.values(playerAttendance).map(player => {
+                const attendanceRate = ((player.gamesPlayed / totalGames) * 100).toFixed(0);
+                
+                // Calculate consistency (how consistent their performance is)
+                const avgPerformance = player.performances.reduce((sum, p) => sum + p, 0) / player.performances.length;
+                const variance = player.performances.reduce((sum, p) => sum + Math.pow(p - avgPerformance, 2), 0) / player.performances.length;
+                const consistency = avgPerformance > 0 ? Math.max(0, 100 - (Math.sqrt(variance) / avgPerformance * 100)).toFixed(0) : 0;
+                
+                return {
+                    ...player,
+                    attendanceRate: parseInt(attendanceRate),
+                    consistency: parseInt(consistency)
+                };
+            }).sort((a, b) => b.attendanceRate - a.attendanceRate);
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-focus username field
+            document.getElementById('username').focus();
+        });
+    </script>
+</body>
+</html>

@@ -78,6 +78,7 @@
             <div class="stats-header">
                 <h1 class="stats-title">Live Statistieken</h1>
                 <div class="stats-actions">
+                    <button class="btn btn-secondary" onclick="undoLastAction()">Ongedaan</button>
                     <button class="btn btn-secondary" onclick="saveCurrentGame()">Wedstrijd Opslaan</button>
                     <button class="btn btn-secondary" onclick="showGameHistory()">Geschiedenis</button>
                     <button class="btn btn-secondary" onclick="resetAllStats()">Reset Stats</button>
@@ -151,6 +152,7 @@
                 <h3>Wedstrijd Geschiedenis</h3>
                 <div style="margin-bottom: 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
                     <button class="btn btn-small" onclick="showPlayerStats()">Speler Prestaties</button>
+                    <button class="btn btn-small" onclick="showDatabaseManager()">Database Beheer</button>
                     <button class="btn btn-small" onclick="exportGameData()">Export Data</button>
                 </div>
                 <div id="historyContent" style="max-height: 400px; overflow-y: auto;">

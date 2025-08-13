@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Basketbal Statistieken Blad - Live Wedstrijd Tracker</title>
+    <meta name="description" content="Professionele basketbal statistieken tracker voor live wedstrijden. Track punten, rebounds, assists en meer voor je team.">
+    <meta name="author" content="Basketball Stats App">
+    <meta name="theme-color" content="#ff6600">
+    
+    <!-- iOS specific meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Basketball Stats">
+    <meta name="apple-touch-fullscreen" content="yes">
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="css/basketball-stats.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Setup Phase -->
+        <div id="setupPhase">
+            <div class="header">
+                <h1>Basketbal Statistieken Blad</h1>
+                <p>Wijs rugnummers toe aan spelers voordat je begint</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Speler Instelling</div>
+                </div>
+                
+                <div class="player-grid" id="playerSetup">
+                    <!-- Players will be inserted here by JavaScript -->
+                </div>
+                
+                <!-- Invallers sectie -->
+                <div style="margin-top: 32px; border-top: 2px solid #f0f0f0; padding-top: 24px;">
+                    <div class="card-header">
+                        <div class="card-title" style="font-size: 1.5rem;">Invallers Toevoegen</div>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 16px;">Voeg invallers toe die vandaag meespelen</p>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center;">
+                        <input 
+                            type="text" 
+                            id="substituteName" 
+                            placeholder="Naam invaller" 
+                            style="flex: 1; min-width: 200px; padding: 12px; border: 2px solid #ff6600; border-radius: 8px; font-size: 16px; outline: none;"
+                            onkeypress="if(event.key==='Enter') addSubstitute()"
+                        />
+                        <input 
+                            type="number" 
+                            id="substituteNumber" 
+                            placeholder="Rugnummer" 
+                            min="0" 
+                            max="99" 
+                            style="width: 120px; padding: 12px; border: 2px solid #ff6600; border-radius: 8px; font-size: 16px; outline: none; text-align: center;"
+                            onkeypress="if(event.key==='Enter') addSubstitute()"
+                        />
+                        <button class="btn" onclick="addSubstitute()" style="white-space: nowrap;">Voeg Toe</button>
+                    </div>
+                    
+                    <div id="substitutesList">
+                        <!-- Invallers worden hier getoond -->
+                    </div>
+                </div>
+                
+                <div class="center">
+                    <button class="btn" onclick="startGame()">Begin Wedstrijd</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Phase -->
+        <div id="gamePhase" class="hidden">
+            <div class="stats-header">
+                <h1 class="stats-title">Live Statistieken</h1>
+                <div class="stats-actions">
+                    <button class="btn btn-secondary" onclick="saveCurrentGame()">Wedstrijd Opslaan</button>
+                    <button class="btn btn-secondary" onclick="showGameHistory()">Geschiedenis</button>
+                    <button class="btn btn-secondary" onclick="resetAllStats()">Reset Stats</button>
+                    <button class="btn btn-secondary" onclick="goToSetup()">Instellingen</button>
+                </div>
+            </div>
+            
+            <div class="game-layout">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <div class="sidebar-title">Speler Beheer</div>
+                    <div id="sidebarContent">
+                        <!-- Sidebar content will be inserted here -->
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="main-content">
+                    <div class="player-grid" id="gameStats">
+                        <!-- Game stats will be inserted here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Assist Modal -->
+        <div id="assistModal" class="modal">
+            <div class="modal-content">
+                <h3>Was dit een assist?</h3>
+                <div id="assistOptions" class="modal-options">
+                    <!-- Assist options will be inserted here -->
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="confirmNoAssist()">Geen Assist</button>
+                    <button class="btn btn-secondary" onclick="hideAssistModal()">Annuleren</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rebound Modal -->
+        <div id="reboundModal" class="modal">
+            <div class="modal-content">
+                <h3>Welk type rebound?</h3>
+                <div class="modal-options">
+                    <div class="modal-option" onclick="confirmRebound('defensive')">Defensieve Rebound</div>
+                    <div class="modal-option" onclick="confirmRebound('offensive')">Offensieve Rebound</div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="hideReboundModal()">Annuleren</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Switch Modal -->
+        <div id="switchModal" class="modal">
+            <div class="modal-content">
+                <h3>Wissel speler</h3>
+                <p style="text-align: center; margin-bottom: 16px; color: #666;">Met wie wil je <strong><span id="switchPlayerName"></span></strong> wisselen?</p>
+                <div id="switchOptions" class="modal-options">
+                    <!-- Switch options will be inserted here -->
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="hideSwitchModal()">Annuleren</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game History Modal -->
+        <div id="historyModal" class="modal">
+            <div class="modal-content" style="max-width: 800px; max-height: 90vh;">
+                <h3>Wedstrijd Geschiedenis</h3>
+                <div style="margin-bottom: 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-small" onclick="showPlayerStats()">Speler Prestaties</button>
+                    <button class="btn btn-small" onclick="exportGameData()">Export Data</button>
+                </div>
+                <div id="historyContent" style="max-height: 400px; overflow-y: auto;">
+                    <!-- History content will be inserted here -->
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="hideHistoryModal()">Sluiten</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Stats Modal -->
+        <div id="playerStatsModal" class="modal">
+            <div class="modal-content" style="max-width: 900px; max-height: 90vh;">
+                <h3>Speler Prestaties (Alle Wedstrijden)</h3>
+                <div id="playerStatsContent" style="max-height: 500px; overflow-y: auto;">
+                    <!-- Player stats content will be inserted here -->
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="hidePlayerStatsModal()">Sluiten</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Player Stats Modal -->
+        <div id="editStatsModal" class="modal">
+            <div class="modal-content" style="max-width: 500px;">
+                <h3>Bewerk Statistieken</h3>
+                <p style="text-align: center; margin-bottom: 20px; color: #666;">
+                    Bewerk statistieken voor <strong><span id="editPlayerName"></span></strong>
+                </p>
+                <div id="editStatsForm" style="display: grid; gap: 16px;">
+                    <!-- Form content will be inserted here -->
+                </div>
+                <div class="modal-actions">
+                    <button class="btn" onclick="saveEditedStats()">Opslaan</button>
+                    <button class="btn btn-secondary" onclick="hideEditStatsModal()">Annuleren</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="js/basketball-stats.js"></script>
+</body>
+</html>

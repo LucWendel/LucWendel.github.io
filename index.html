@@ -2,232 +2,236 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="ie=edge" http-equiv="X-UA-Compatible">
-
-    <title>Home</title>
-
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/bubbels.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-          rel="stylesheet">
-    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
-          integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
-          rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,400&display=swap"
-          rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css?family=Raleway:700&display=swap" rel="stylesheet"/>
-
-    <script src="js/script-index.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luc Wendel - Portfolio</title>
+    <link rel="stylesheet" href="css/portfolio.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
-<!-- START NAV -->
-<nav class="nav" id="navbar">
-    <ul class="nav-list">
-        <li>
-            <a href="#welcome-section">Over</a>
-        </li>
-        <li>
-            <a href="#projects">Werk</a>
-        </li>
-        <li>
-            <a href="#contact">Contact</a>
-        </li>
-    </ul>
-</nav>
-<!-- END NAV -->
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">Luc Wendel</div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">Over mij</a></li>
+                <li><a href="#projects" class="nav-link">Projecten</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
 
-        <!-- START WELCOME SECTION -->
-
-            <section class="welcome-section" id="welcome-section">
-                <h1>Hallo mijn naam is Luc Wendel</h1>
-                <p>een web developer</p>
-            </section>
-
-        <!-- END WELCOME SECTION -->
-
-<!-- START BASKETBALL STATS BUTTON -->
-<section class="basketball-section" style="background: linear-gradient(135deg, #ff6600, #e55a00); padding: 60px 20px; text-align: center; margin: 40px 0;">
-    <h2 style="color: white; font-size: 2.5rem; margin-bottom: 20px; font-weight: bold;">Basketbal Statistieken Tracker</h2>
-    <p style="color: white; font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9;">Track live basketbal statistieken voor je team! <br>Als je het nogsteeds niet begrijpt, hier moet je heen gaan.</p>
-    <a href="basketball-stats-clean.html" class="basketball-btn" style="display: inline-block; background: white; color: #ff6600; padding: 20px 40px; border-radius: 50px; text-decoration: none; font-size: 1.3rem; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" 
-       onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 40px rgba(0,0,0,0.4)';" 
-       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.3)';">
-        Open Basketball Stats Tracker
-    </a>
-</section>
-<!-- END BASKETBALL STATS BUTTON -->
-
-<!-- START PROJECTS SECTION -->
-
-<section id="projects" class="projects-section">
-    <h2 class="projects-section-header">Dit zijn een paar projecten</h2>
-
-    <div class="projects-grid">`n        <a href="basketball-stats.html" class="project project-tile" target="_blank">`n            <img class="project-image" src="img/basketball-icon.png" alt="Basketball Stats" onerror="this.style.background='linear-gradient(135deg, #f97316, #92400e)'; this.innerHTML='??';" />`n            <p class="project-title">`n                <span class="code">&lt;</span>`n                Basketball Stats`n                <span class="code">&#47;&gt;</span>`n            </p>`n        </a>
-        <a
-                href="https:carpcenteruithoorn.nl"
-                target="_blank"
-                class="project project-tile"
-        >
-            <img
-                    class="project-image"
-                    src="http://carpcenteruithoorn.nl/wp-content/uploads/2023/03/55-nonsard-lac-de-madine-b-jamot-dr-6-1920x1280-1-300x200.jpg"
-                    alt="project"
-            />
-            <p class="project-title">
-                <span class="code">&lt;</span>
-                Carp Center Uithoorn
-                <span class="code">&#47;&gt;</span>
-            </p>
-        </a>
-        <a
-                href="projecten/project1/project1.html"
-                target="_blank"
-                class="project project-tile"
-        >
-            <img
-                    class="project-image"
-                    src=""
-                    alt="project"
-            />
-            <p class="project-title">
-                <span class="code">&lt;</span>
-                ...
-                <span class="code">&#47;&gt;</span>
-            </p>
-        </a>
-        <a
-                href="projecten/project2/project2.html"
-                target="_blank"
-                class="project project-tile"
-        >
-            <img
-                    class="project-image"
-                    src="https://cdn.freecodecamp.org/testable-projects-fcc/images/calc.png"
-                    alt="project"
-            />
-            <p class="project-title">
-                <span class="code">&lt;</span>
-                ...
-                <span class="code">&#47;&gt;</span>
-            </p>
-        </a>
-        <a
-                href="projecten/project3/project3.html"
-                target="_blank"
-                class="project project-tile"
-        >
-            <img
-                    class="project-image"
-                    src=""
-                    alt="project"
-            />
-            <p class="project-title">
-                <span class="code">&lt;</span>
-                ...
-                <span class="code">&#47;&gt;</span>
-            </p>
-        </a>
-        <a
-                href="projecten/project4/project4.html"
-                target="_blank"
-                class="project project-tile"
-        >
-            <img
-                    class="project-image"
-                    src=""
-                    alt="project"
-            />
-            <p class="project-title">
-                <span class="code">&lt;</span>
-                ...
-                <span class="code">&#47;&gt;</span>
-            </p>
-        </a>
-        <a
-                href="projecten/project5/project5.html"
-                target="_blank"
-                class="project project-tile"
-        >
-            <img
-                    class="project-image"
-                    src="https://cdn.freecodecamp.org/testable-projects-fcc/images/tic-tac-toe.png"
-                    alt="project"
-            />
-            <p class="project-title">
-                <span class="code">&lt;</span>
-                ...
-                <span class="code">&#47;&gt;</span>
-            </p>
-        </a>
-    </div>
-
-    <a
-            href="https://codepen.io/FreeCodeCamp/"
-            class="btn btn-show-all"
-            target="_blank"
-    >Show all<i class="fas fa-chevron-right"></i
-    ></a>
-</section>
-
-<!-- END PROJECTS SECTION -->
-
-<!-- START CONTACT SECTION -->
-
-<section id="contact" class="contact-section">
-    <div class="contact-section-header">
-        <h2>Let's work together...</h2>
-        <p>How do you take your coffee?</p>
-    </div>
-    <div class="contact-links">
-        <a
-                href="https://www.linkedin.com/in/luc-wendel/"
-                target="_blank"
-                class="btn contact-details"
-        ><i class="fab fa-linkedin-square"></i> LinkedIn</a
-        >
-        <a
-                id="profile-link"
-                href="https://github.com/LucWendel"
-                target="_blank"
-                class="btn contact-details"
-        ><i class="fab fa-github"></i> GitHub</a
-        >
-        <a
-                href="https://twitter.com/404"
-                target="_blank"
-                class="btn contact-details"
-        ><i class="fab fa-twitter"></i> Twitter</a
-        >
-        <a href="mailto:lucwendel2002@gmail.com" class="btn contact-details"
-        ><i class="fas fa-at"></i> Send a mail</a
-        >
-        <a href="tel:555-555-5555" class="btn contact-details"
-        ><i class="fas fa-mobile-alt"></i> Call me</a
-        >
-    </div>
-</section>
-
-<!-- END CONTACT SECTION -->
-</body>
-
-<foo>
-    <section class="sticky">
-        <div class="bubbles">
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">Creative Developer & Digital Innovator</h1>
+                    <p class="hero-subtitle">Ik help bedrijven hun digitale uitdagingen op te lossen met moderne technologie en creativiteit</p>
+                    <a href="#projects" class="cta-button">Mijn werk bekijken</a>
+                </div>
+                <div class="hero-image">
+                    <img src="img/pf.png" alt="Luc Wendel">
+                </div>
+            </div>
         </div>
     </section>
-</foo>
 
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">Over mij</h2>
+            <p class="about-intro">
+                Ik ben een veelzijdige developer met een passie voor innovatieve oplossingen. Met ervaring in webontwikkeling, 
+                cloud infrastructure en complexe systemen, help ik organisaties hun digitale transformatie te realiseren.
+            </p>
+
+            <div class="experience-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <h3>Semester 1: Kiat - CO2 Berekener</h3>
+                    <p>
+                        Gewerkt aan een krachtige CO2-berekenaar met modulaire aanpak en wetenschappelijk gevalideerde gegevens. 
+                        Het systeem helpt bedrijven hun ecologische voetafdruk te verminderen en financiële voordelen te behalen 
+                        via subsidies zoals de Energie-investeringsaftrek (EIA) en Milieu-investeringsaftrek (MIA).
+                    </p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <h3>Semester 2: Boekhoudprogramma</h3>
+                    <p>
+                        Ontwikkeld een gespecialiseerd boekhoudprogramma voor buitengewone varkens(houderijen). 
+                        Een slim systeem voor complexe administratieve processen in de agrarische sector.
+                    </p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <h3>Semester 3 & 4: Meeloopstage Gemeente Amsterdam</h3>
+                    <p>
+                        Uitgevoerd twee belangrijke projecten voor de digitale tak van gemeente Amsterdam:
+                        <ul>
+                            <li><strong>Compliancy Update:</strong> Audit en update van compliancy-vereisten met overzicht van openstaande taken</li>
+                            <li><strong>Archief Onderwerpen:</strong> Creatie van een gestructureerd archief gerelateerd aan compliancy</li>
+                        </ul>
+                    </p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <h3>Huidig: Dark Tech Semester</h3>
+                    <p>
+                        Een uitdagend semester met 4 sprints van 3 weken. Werken aan innovatieve projecten die de maatschappelijke impact 
+                        van technologie kritisch onderzoeken. Focus op samenwerking, iteratie en kwaliteit.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="section-title">Mijn Projecten</h2>
+
+            <!-- Live Projects -->
+            <div class="projects-category">
+                <h3 class="category-title">Live Projecten</h3>
+                <div class="projects-grid">
+                    <div class="project-card featured">
+                        <div class="project-image" style="background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);">
+                            <span class="featured-badge">Meest Trots Op</span>
+                        </div>
+                        <div class="project-content">
+                            <h3>OV-Kaart.com</h3>
+                            <p>
+                                Een innovatief platform waar gemeentes in Nederland OV-kaarten kunnen aanmaken en versturen naar 
+                                vluchtelingen en personen in asielzoekerscentra. Het systeem helpt mensen mobiliteit en oriëntatie 
+                                te verbeteren. Gebouwd van A tot Z.
+                            </p>
+                            <div class="project-tags">
+                                <span class="tag">Full Stack</span>
+                                <span class="tag">Impact</span>
+                                <span class="tag">Productie</span>
+                            </div>
+                            <a href="https://www.ov-kaart.com/" target="_blank" class="project-link">Bezoek site →</a>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-image" style="background: linear-gradient(135deg, #FF8C42 0%, #FFB347 100%);">
+                        </div>
+                        <div class="project-content">
+                            <h3>Carp Center Uithoorn</h3>
+                            <p>
+                                Een professionele website voor mijn zwager's zaak. Clean design met focus op user experience 
+                                en duidelijke informatiestructuur voor klanten.
+                            </p>
+                            <div class="project-tags">
+                                <span class="tag">Web Design</span>
+                                <span class="tag">Client Project</span>
+                            </div>
+                            <a href="https://carpcenteruithoorn.nl/" target="_blank" class="project-link">Bezoek site →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- School Projects -->
+            <div class="projects-category">
+                <h3 class="category-title">Schoolprojecten</h3>
+
+                <!-- Dark Tech -->
+                <div class="school-project">
+                    <h4 class="project-title">Dark Tech Semester</h4>
+                    <p class="project-description">
+                        Een semester van 4 sprints (3 weken per sprint) gericht op het kritisch onderzoeken van de 
+                        maatschappelijke impact van technologie.
+                    </p>
+
+                    <div class="sprints-container">
+                        <div class="sprint">
+                            <h5 class="sprint-title">Sprint 1: Onderzoek & Conceptontwikkeling</h5>
+                            <ul class="sprint-list">
+                                <li>Onderzoek naar parkeerscanauto's en maatschappelijke problemen</li>
+                                <li>5 initiële concepten ontwikkeld</li>
+                                <li>3 concepten geselecteerd en samengevoegd tot eindproject</li>
+                            </ul>
+                        </div>
+
+                        <div class="sprint">
+                            <h5 class="sprint-title">Sprint 2: Prototyping & Development</h5>
+                            <ul class="sprint-list">
+                                <li>Cubicle constructie gestart</li>
+                                <li>AI-component development</li>
+                                <li>Visuele vormgeving kraampje</li>
+                                <li>Teamwork op drie parallelle tracks</li>
+                            </ul>
+                        </div>
+
+                        <div class="sprint">
+                            <h5 class="sprint-title">Sprint 3: Iteratie & Refinement</h5>
+                            <ul class="sprint-list">
+                                <li>Afronding cubicle (complexer dan verwacht)</li>
+                                <li>Feedback van docent en opdrachtgever verwerkt</li>
+                                <li>Ideaal script ontworpen</li>
+                                <li>Survey website opgesteld</li>
+                            </ul>
+                        </div>
+
+                        <div class="sprint">
+                            <h5 class="sprint-title">Sprint 4: Integratie & Afronding</h5>
+                            <ul class="sprint-list">
+                                <li>Adviesrapport opgesteld</li>
+                                <li>Alle losse componenten samengevoegd tot cohesief geheel</li>
+                                <li>Final touches en quality assurance</li>
+                                <li>Project delivery</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="other-projects">
+                    <p>
+                        Naast Dark Tech heb ik verschillende andere schoolprojecten voltooid, waaronder CO2-berekenaar (Kiat), 
+                        boekhoudprogramma, en stages bij gemeente Amsterdam.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Laten we in contact komen</h2>
+            <p class="contact-subtitle">Ben je geïnteresseerd in samenwerking? Neem gerust contact op!</p>
+            
+            <div class="contact-methods">
+                <a href="https://www.linkedin.com/in/luc-wendel" target="_blank" class="contact-card">
+                    <h3>LinkedIn</h3>
+                    <p>Bel me op in mijn profiel</p>
+                </a>
+                <a href="mailto:contact@lucwendel.com" class="contact-card">
+                    <h3>Email</h3>
+                    <p>Stuur me een bericht</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Luc Wendel. Alle rechten voorbehouden.</p>
+            <p class="footer-link"><a href="archive/index_backup.html" class="legacy-link">→ Legacy website (2006)</a></p>
+        </div>
+    </footer>
+
+    <script src="js/portfolio.js"></script>
+</body>
 </html>
 

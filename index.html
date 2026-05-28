@@ -1,237 +1,927 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luc Wendel - Portfolio</title>
-    <link rel="stylesheet" href="css/portfolio.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luc Wendel — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f5f2;
+    --bg2: #f0ede8;
+    --surface: #ffffff;
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.14);
+    --text: #111110;
+    --muted: #6b6b66;
+    --accent: #1a56e8;
+    --accent-light: #e8effe;
+    --serif: 'DM Serif Display', serif;
+    --sans: 'Outfit', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 3rem;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(247,245,242,0.88);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 0 3rem;
+    gap: 4rem;
+    position: relative;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 560px; height: 560px;
+    background: radial-gradient(circle, rgba(26,86,232,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-text { padding-top: 80px; }
+
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero-label::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--accent);
+    display: block;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 6vw, 5.5rem);
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-desc {
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 440px;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    padding: 0.75rem 1.75rem;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    transition: opacity 0.2s, transform 0.2s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .btn-secondary {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border-strong);
+    padding-bottom: 2px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--text); }
+
+  .hero-image {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 80px;
+  }
+
+  .avatar-wrapper {
+    position: relative;
+    width: 340px;
+    height: 420px;
+    margin-left: -3rem;
+  }
+
+  .avatar-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: var(--accent-light);
+    border: 1px solid rgba(26,86,232,0.18);
+    transform: rotate(4deg) translate(10px, 8px);
+    z-index: 0;
+  }
+
+  .avatar-frame {
+    width: 340px;
+    height: 420px;
+    border-radius: 16px;
+    background: var(--bg2);
+    border: 1px solid var(--border-strong);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    transform: rotate(-3deg);
+    box-shadow:
+      0 8px 24px rgba(0,0,0,0.10),
+      0 24px 56px rgba(0,0,0,0.08);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+  }
+
+  .avatar-wrapper:hover .avatar-frame {
+    transform: rotate(-1deg) translateY(-6px);
+    box-shadow:
+      0 16px 40px rgba(0,0,0,0.13),
+      0 32px 72px rgba(0,0,0,0.10);
+  }
+
+  .avatar-wrapper:hover::before {
+    transform: rotate(5deg) translate(14px, 12px);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .avatar-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .avatar-frame .avatar-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 7rem;
+    color: var(--border-strong);
+  }
+
+  /* SECTIONS */
+  section { padding: 6rem 3rem; }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    line-height: 1.1;
+    margin-bottom: 3rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  /* ABOUT */
+  #about {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
+  }
+
+  .about-text p:last-child { margin-bottom: 0; }
+
+  .timeline { display: flex; flex-direction: column; }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .timeline-item:last-child { border-bottom: 1px solid var(--border); }
+
+  .timeline-period {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    padding-top: 3px;
+  }
+
+  .timeline-content h4 {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+    color: var(--text);
+  }
+
+  .timeline-content p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* PROJECTS */
+  #projects { background: var(--bg); }
+
+  .projects-intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: end;
+    margin-bottom: 4rem;
+  }
+
+  .projects-intro p {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .project-card {
+    background: var(--surface);
+    padding: 2.5rem;
+    position: relative;
+    transition: background 0.2s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .project-card:hover { background: var(--bg2); }
+
+  .project-card.featured {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .project-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .badge-live { background: #e8effe; color: #1a56e8; }
+  .badge-school { background: #e8f5e9; color: #2e7d32; }
+  .badge-client { background: #fff3e0; color: #bf6f00; }
+
+  .project-card h3 {
+    font-family: var(--serif);
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  .project-card:not(.featured) h3 { font-size: 1.35rem; }
+
+  .project-card p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    border: 1px solid var(--border-strong);
+    padding: 3px 9px;
+    border-radius: 100px;
+    background: var(--bg);
+  }
+
+  .project-link {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+    transition: gap 0.2s;
+  }
+
+  .project-link:hover { gap: 0.65rem; }
+
+  .featured-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+
+  .big-arrow {
+    width: 64px; height: 64px;
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: var(--text);
+    text-decoration: none;
+    background: var(--bg);
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+
+  .big-arrow:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* DARK TECH */
+  #darktech {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sprints {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 3rem;
+  }
+
+  .sprint { background: var(--surface); padding: 2rem 1.5rem; }
+
+  .sprint-num {
+    font-family: var(--serif);
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--border-strong);
+    margin-bottom: 1rem;
+  }
+
+  .sprint h4 {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+
+  .sprint ul { list-style: none; padding: 0; }
+
+  .sprint ul li {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+  }
+
+  .sprint ul li:last-child { border-bottom: none; }
+
+  .sprint ul li::before {
+    content: '→ ';
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 10px;
+  }
+
+  /* CONTACT */
+  #contact { background: var(--bg); }
+
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  .contact-text h2 {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .contact-text h2 em { font-style: italic; color: var(--accent); }
+
+  .contact-text p {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .contact-link {
+    background: var(--surface);
+    padding: 1.25rem 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.2s;
+    gap: 1rem;
+  }
+
+  .contact-link:hover { background: var(--bg2); }
+
+  .contact-link-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .contact-link-icon {
+    width: 36px; height: 36px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-family: var(--mono);
+    color: var(--muted);
+  }
+
+  .contact-link-label {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  .contact-link-name { font-size: 15px; font-weight: 500; }
+
+  .contact-link-arrow {
+    color: var(--muted);
+    font-size: 16px;
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .contact-link:hover .contact-link-arrow { color: var(--accent); transform: translate(3px, -3px); }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+  }
+
+  footer p { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  footer a {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  footer a:hover { color: var(--text); }
+
+  /* ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 6rem 1.5rem 3rem; min-height: auto; }
+    .hero-image { justify-content: flex-start; padding-top: 0; }
+    .avatar-wrapper { width: 220px; height: 280px; margin-left: 0; }
+    .avatar-frame { width: 220px; height: 280px; }
+    section { padding: 4rem 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .projects-intro { grid-template-columns: 1fr; gap: 1rem; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card.featured { grid-column: span 1; grid-template-columns: 1fr; }
+    .featured-cta { flex-direction: row; }
+    .sprints { grid-template-columns: 1fr 1fr; }
+    .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">Luc Wendel</div>
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link active">Home</a></li>
-                <li><a href="#about" class="nav-link">Over mij</a></li>
-                <li><a href="#projects" class="nav-link">Projecten</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1 class="hero-title">Creative Developer & Digital Innovator</h1>
-                    <p class="hero-subtitle">Ik help bedrijven hun digitale uitdagingen op te lossen met moderne technologie en creativiteit</p>
-                    <a href="#projects" class="cta-button">Mijn werk bekijken</a>
-                </div>
-                <div class="hero-image">
-                    <img src="img/pf.png" alt="Luc Wendel">
-                </div>
+<nav>
+  <a href="#" class="nav-logo">luc.wendel</a>
+  <ul class="nav-links">
+    <li><a href="#about">Over mij</a></li>
+    <li><a href="#projects">Projecten</a></li>
+    <li><a href="#darktech">Dark Tech</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-text">
+    <div class="hero-label">Business ICT & Management</div>
+    <h1>Hallo, ik ben<br><em>Luc Wendel</em></h1>
+    <p class="hero-desc">
+      Ik bouw digitale producten die werken en er goed uitzien. Van full-stack webapps tot maatschappelijk impactvolle tools.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn-primary">Bekijk mijn werk</a>
+      <a href="#contact" class="btn-secondary">Neem contact op</a>
+    </div>
+  </div>
+  <div class="hero-image">
+    <div class="avatar-wrapper">
+      <div class="avatar-frame">
+        <img src="https://lucwendel.github.io/img/pf.png" alt="Luc Wendel" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+        <div class="avatar-fallback" style="display:none">LW</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="reveal">
+    <div class="section-label">Over mij</div>
+    <div class="about-grid">
+      <div class="about-text">
+        <div class="section-title">Developer met<br><em style="font-style:italic; color:var(--accent)">oog voor impact</em></div>
+        <p>
+          Ik ben een veelzijdige developer met een passie voor innovatieve oplossingen. Met ervaring in webontwikkeling, cloud infrastructure en complexe systemen help ik organisaties hun digitale transformatie te realiseren.
+        </p>
+        <p>
+          Van een CO2-berekenaar voor bedrijven tot OV-kaarten voor vluchtelingen, ik werk het liefst aan dingen die er echt toe doen.
+        </p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-period">Nu</span>
+          <div class="timeline-content">
+            <h4>Dark Tech Semester</h4>
+            <p>Kritisch onderzoek naar de maatschappelijke impact van technologie via 4 sprints van 3 weken.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-period">Sem 3–4</span>
+          <div class="timeline-content">
+            <h4>Meeloopstage — Gemeente Amsterdam</h4>
+            <p>Compliancy-audit en archiefstructuur voor de digitale tak van Amsterdam.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-period">Sem 2</span>
+          <div class="timeline-content">
+            <h4>Boekhoudprogramma</h4>
+            <p>Gespecialiseerd systeem voor complexe administratie in de agrarische sector.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-period">Sem 1</span>
+          <div class="timeline-content">
+            <h4>Kimat — CO2 Berekener</h4>
+            <p>Modulaire CO2-calculator met wetenschappelijk gevalideerde data, inclusief EIA/MIA subsidieadvies.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="reveal">
+    <div class="projects-intro">
+      <div>
+        <div class="section-label">Projecten</div>
+        <div class="section-title">Dingen die ik<br>heb gebouwd</div>
+      </div>
+      <p>Van A tot Z gebouwd, of in samenwerking. Altijd met focus op echte gebruikers en echte impact.</p>
+    </div>
+
+    <div class="projects-grid">
+      <div class="project-card featured">
+        <div>
+          <span class="project-badge badge-live">Live · Meest trots op</span>
+          <h3>OV-Kaart.com</h3>
+          <p>Een innovatief platform waar gemeentes in Nederland OV-kaarten kunnen aanmaken en versturen naar vluchtelingen en personen in asielzoekerscentra. Helpt mensen mobiliteit en oriëntatie te verbeteren.</p>
+          <div class="project-tags">
+            <span class="tag">Full Stack</span>
+            <span class="tag">Productie</span>
+            <span class="tag">Impact</span>
+          </div>
+          <a href="https://www.ov-kaart.com/" target="_blank" class="project-link">Bezoek ov-kaart.com →</a>
+        </div>
+        <div class="featured-cta">
+          <a href="https://www.ov-kaart.com/" target="_blank" class="big-arrow">↗</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <span class="project-badge badge-client">Client project</span>
+        <h3>Carp Center Uithoorn</h3>
+        <p>Professionele website voor een gespecialiseerde viswinkel. Clean design met focus op user experience en heldere informatiestructuur.</p>
+        <div class="project-tags">
+          <span class="tag">Web Design</span>
+          <span class="tag">UX</span>
+        </div>
+        <a href="https://carpcenteruithoorn.nl/" target="_blank" class="project-link">Bezoek site →</a>
+      </div>
+
+      <div class="project-card">
+        <span class="project-badge badge-school">Stage</span>
+        <h3>Gemeente Amsterdam</h3>
+        <p>Twee projecten voor de digitale tak: compliancy-audit met overzicht van openstaande taken, en een gestructureerd archiefsysteem.</p>
+        <div class="project-tags">
+          <span class="tag">Overheid</span>
+          <span class="tag">Compliancy</span>
+          <span class="tag">Archief</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <span class="project-badge badge-client">Client project</span>
+        <h3>Jaspers Media</h3>
+        <p>Ontwikkelde meerdere webcrawlers en bouwde de fundering voor een database-oplossing die drie databases in één zou samenvoegen.</p>
+        <div class="project-tags">
+          <span class="tag">Backend</span>
+          <span class="tag">Crawlers</span>
+          <span class="tag">Data Engineering</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <span class="project-badge badge-client">Client project</span>
+        <h3>Chip Bizz</h3>
+        <p>Verantwoordelijk voor de backend: ontwerp, implementatie en operationeel beheer gedurende meerdere jaren.</p>
+        <div class="project-tags">
+          <span class="tag">Backend</span>
+          <span class="tag">Ops</span>
+          <span class="tag">Schaalbaarheid</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <span class="project-badge badge-live">Live</span>
+        <h3>Kimat</h3>
+        <p>CO2-berekenaar en consultancy-tool; modulaire calculator beschikbaar op Kimat.nl.</p>
+        <div class="project-tags">
+          <span class="tag">Product</span>
+          <span class="tag">Data</span>
+        </div>
+        <a href="https://kimat.nl/" target="_blank" class="project-link">Bezoek Kimat.nl →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="darktech">
+  <div class="reveal">
+    <div class="section-label">Huidig semester</div>
+    <div class="section-title">Dark Tech</div>
+    <p style="color: var(--muted); font-size: 16px; max-width: 560px; margin-bottom: 0; line-height: 1.75;">
+      Een uitdagend semester van 4 sprints (3 weken elk) gericht op het kritisch onderzoeken van de maatschappelijke impact van technologie. Van parkeerscanauto's tot een AI-installatie in een cubicle.
+    </p>
+    <div class="sprints">
+      <div class="sprint">
+        <div class="sprint-num">01</div>
+        <h4>Onderzoek &amp; Concept</h4>
+        <ul>
+          <li>Parkeerscanauto's onderzocht</li>
+          <li>5 initiële concepten</li>
+          <li>3 samengevoegd tot eindproject</li>
+        </ul>
+      </div>
+      <div class="sprint">
+        <div class="sprint-num">02</div>
+        <h4>Prototyping</h4>
+        <ul>
+          <li>Cubicle constructie gestart</li>
+          <li>AI-component ontwikkeld</li>
+          <li>Visuele vormgeving kraampje</li>
+        </ul>
+      </div>
+      <div class="sprint">
+        <div class="sprint-num">03</div>
+        <h4>Iteratie</h4>
+        <ul>
+          <li>Cubicle afgerond</li>
+          <li>Feedback verwerkt</li>
+          <li>Ideaal script + survey site</li>
+        </ul>
+      </div>
+      <div class="sprint">
+        <div class="sprint-num">04</div>
+        <h4>Integratie</h4>
+        <ul>
+          <li>Adviesrapport opgesteld</li>
+          <li>Alle onderdelen samengevoegd</li>
+          <li>Quality assurance + delivery</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="reveal">
+    <div class="contact-inner">
+      <div class="contact-text">
+        <div class="section-label">Contact</div>
+        <h2>Laten we <em>samenwerken</em></h2>
+        <p>Geïnteresseerd in samenwerking of gewoon nieuwsgierig? Stuur me een bericht via LinkedIn of e-mail.</p>
+      </div>
+      <div class="contact-links">
+        <a href="https://www.linkedin.com/in/luc-wendel" target="_blank" class="contact-link">
+          <div class="contact-link-left">
+            <div class="contact-link-icon">in</div>
+            <div>
+              <div class="contact-link-label">LinkedIn</div>
+              <div class="contact-link-name">luc-wendel</div>
             </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <h2 class="section-title">Over mij</h2>
-            <p class="about-intro">
-                Ik ben een veelzijdige developer met een passie voor innovatieve oplossingen. Met ervaring in webontwikkeling, 
-                cloud infrastructure en complexe systemen, help ik organisaties hun digitale transformatie te realiseren.
-            </p>
-
-            <div class="experience-timeline">
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <h3>Semester 1: Kiat - CO2 Berekener</h3>
-                    <p>
-                        Gewerkt aan een krachtige CO2-berekenaar met modulaire aanpak en wetenschappelijk gevalideerde gegevens. 
-                        Het systeem helpt bedrijven hun ecologische voetafdruk te verminderen en financiële voordelen te behalen 
-                        via subsidies zoals de Energie-investeringsaftrek (EIA) en Milieu-investeringsaftrek (MIA).
-                    </p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <h3>Semester 2: Boekhoudprogramma</h3>
-                    <p>
-                        Ontwikkeld een gespecialiseerd boekhoudprogramma voor buitengewone varkens(houderijen). 
-                        Een slim systeem voor complexe administratieve processen in de agrarische sector.
-                    </p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <h3>Semester 3 & 4: Meeloopstage Gemeente Amsterdam</h3>
-                    <p>
-                        Uitgevoerd twee belangrijke projecten voor de digitale tak van gemeente Amsterdam:
-                        <ul>
-                            <li><strong>Compliancy Update:</strong> Audit en update van compliancy-vereisten met overzicht van openstaande taken</li>
-                            <li><strong>Archief Onderwerpen:</strong> Creatie van een gestructureerd archief gerelateerd aan compliancy</li>
-                        </ul>
-                    </p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <h3>Huidig: Dark Tech Semester</h3>
-                    <p>
-                        Een uitdagend semester met 4 sprints van 3 weken. Werken aan innovatieve projecten die de maatschappelijke impact 
-                        van technologie kritisch onderzoeken. Focus op samenwerking, iteratie en kwaliteit.
-                    </p>
-                </div>
+          </div>
+          <span class="contact-link-arrow">↗</span>
+        </a>
+        <a href="mailto:lucwendel2002@gmail.com" class="contact-link">
+          <div class="contact-link-left">
+            <div class="contact-link-icon">@</div>
+            <div>
+              <div class="contact-link-label">E-mail</div>
+              <div class="contact-link-name">lucwendel2002@gmail.com</div>
             </div>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="projects">
-        <div class="container">
-            <h2 class="section-title">Mijn Projecten</h2>
-
-            <!-- Live Projects -->
-            <div class="projects-category">
-                <h3 class="category-title">Live Projecten</h3>
-                <div class="projects-grid">
-                    <div class="project-card featured">
-                        <div class="project-image" style="background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);">
-                            <span class="featured-badge">Meest Trots Op</span>
-                        </div>
-                        <div class="project-content">
-                            <h3>OV-Kaart.com</h3>
-                            <p>
-                                Een innovatief platform waar gemeentes in Nederland OV-kaarten kunnen aanmaken en versturen naar 
-                                vluchtelingen en personen in asielzoekerscentra. Het systeem helpt mensen mobiliteit en oriëntatie 
-                                te verbeteren. Gebouwd van A tot Z.
-                            </p>
-                            <div class="project-tags">
-                                <span class="tag">Full Stack</span>
-                                <span class="tag">Impact</span>
-                                <span class="tag">Productie</span>
-                            </div>
-                            <a href="https://www.ov-kaart.com/" target="_blank" class="project-link">Bezoek site →</a>
-                        </div>
-                    </div>
-
-                    <div class="project-card">
-                        <div class="project-image" style="background: linear-gradient(135deg, #FF8C42 0%, #FFB347 100%);">
-                        </div>
-                        <div class="project-content">
-                            <h3>Carp Center Uithoorn</h3>
-                            <p>
-                                Een professionele website voor mijn zwager's zaak. Clean design met focus op user experience 
-                                en duidelijke informatiestructuur voor klanten.
-                            </p>
-                            <div class="project-tags">
-                                <span class="tag">Web Design</span>
-                                <span class="tag">Client Project</span>
-                            </div>
-                            <a href="https://carpcenteruithoorn.nl/" target="_blank" class="project-link">Bezoek site →</a>
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <span class="contact-link-arrow">↗</span>
+        </a>
+        <a href="https://github.com/LucWendel" target="_blank" class="contact-link">
+          <div class="contact-link-left">
+            <div class="contact-link-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.6"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
             </div>
-
-            <!-- School Projects -->
-            <div class="projects-category">
-                <h3 class="category-title">Schoolprojecten</h3>
-
-                <!-- Dark Tech -->
-                <div class="school-project">
-                    <h4 class="project-title">Dark Tech Semester</h4>
-                    <p class="project-description">
-                        Een semester van 4 sprints (3 weken per sprint) gericht op het kritisch onderzoeken van de 
-                        maatschappelijke impact van technologie.
-                    </p>
-
-                    <div class="sprints-container">
-                        <div class="sprint">
-                            <h5 class="sprint-title">Sprint 1: Onderzoek & Conceptontwikkeling</h5>
-                            <ul class="sprint-list">
-                                <li>Onderzoek naar parkeerscanauto's en maatschappelijke problemen</li>
-                                <li>5 initiële concepten ontwikkeld</li>
-                                <li>3 concepten geselecteerd en samengevoegd tot eindproject</li>
-                            </ul>
-                        </div>
-
-                        <div class="sprint">
-                            <h5 class="sprint-title">Sprint 2: Prototyping & Development</h5>
-                            <ul class="sprint-list">
-                                <li>Cubicle constructie gestart</li>
-                                <li>AI-component development</li>
-                                <li>Visuele vormgeving kraampje</li>
-                                <li>Teamwork op drie parallelle tracks</li>
-                            </ul>
-                        </div>
-
-                        <div class="sprint">
-                            <h5 class="sprint-title">Sprint 3: Iteratie & Refinement</h5>
-                            <ul class="sprint-list">
-                                <li>Afronding cubicle (complexer dan verwacht)</li>
-                                <li>Feedback van docent en opdrachtgever verwerkt</li>
-                                <li>Ideaal script ontworpen</li>
-                                <li>Survey website opgesteld</li>
-                            </ul>
-                        </div>
-
-                        <div class="sprint">
-                            <h5 class="sprint-title">Sprint 4: Integratie & Afronding</h5>
-                            <ul class="sprint-list">
-                                <li>Adviesrapport opgesteld</li>
-                                <li>Alle losse componenten samengevoegd tot cohesief geheel</li>
-                                <li>Final touches en quality assurance</li>
-                                <li>Project delivery</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="other-projects">
-                    <p>
-                        Naast Dark Tech heb ik verschillende andere schoolprojecten voltooid, waaronder CO2-berekenaar (Kiat), 
-                        boekhoudprogramma, en stages bij gemeente Amsterdam.
-                    </p>
-                </div>
+            <div>
+              <div class="contact-link-label">GitHub</div>
+              <div class="contact-link-name">LucWendel</div>
             </div>
-        </div>
-    </section>
+          </div>
+          <span class="contact-link-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title">Laten we in contact komen</h2>
-            <p class="contact-subtitle">Ben je geïnteresseerd in samenwerking? Neem gerust contact op!</p>
-            
-            <div class="contact-methods">
-                <a href="https://www.linkedin.com/in/luc-wendel" target="_blank" class="contact-card">
-                    <h3>LinkedIn</h3>
-                    <p>Bel me op in mijn profiel</p>
-                </a>
-                <a href="mailto:contact@lucwendel.com" class="contact-card">
-                    <h3>Email</h3>
-                    <p>Stuur me een bericht</p>
-                </a>
-            </div>
-        </div>
-    </section>
+<footer>
+  <p>© 2026 Luc Wendel</p>
+  <a href="https://lucwendel.github.io/archive/index_backup.html">Legacy site →</a>
+</footer>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 Luc Wendel. Alle rechten voorbehouden.</p>
-            <p class="footer-link"><a href="archive/index_backup.html" class="legacy-link">→ Legacy website (2006)</a></p>
-        </div>
-    </footer>
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-    <script src="js/portfolio.js"></script>
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
-

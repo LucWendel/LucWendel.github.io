@@ -626,6 +626,37 @@
 
   .reveal.visible { opacity: 1; transform: none; }
 
+  /* Dark Tech contribution cards */
+  #darktech .dk-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+    align-items: start;
+  }
+
+  .dk-card {
+    background: var(--surface);
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(16,24,40,0.04);
+  }
+
+  .dk-card h4 {
+    font-family: var(--serif);
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+
+  .dk-card p { color: var(--muted); line-height: 1.6; margin-bottom: 0.5rem; }
+
+  .dk-list { margin: 0.5rem 0 0; padding-left: 1.1rem; color: var(--muted); }
+
+  @media (max-width: 900px) {
+    #darktech .dk-grid { grid-template-columns: 1fr; }
+  }
+
   /* MOBILE */
   @media (max-width: 900px) {
     nav { padding: 1rem 1.5rem; }
@@ -816,45 +847,45 @@
   <div class="reveal">
     <div class="section-label">Huidig semester</div>
     <div class="section-title">Dark Tech</div>
-    <p style="color: var(--muted); font-size: 16px; max-width: 560px; margin-bottom: 0; line-height: 1.75;">
-      Een uitdagend semester van 4 sprints (3 weken elk) gericht op het kritisch onderzoeken van de maatschappelijke impact van technologie. Van parkeerscanauto's tot een AI-installatie in een cubicle.
+    <p style="color: var(--muted); font-size: 16px; max-width: 760px; margin-bottom: 0; line-height: 1.75;">
+      Een uitdagend semester van 4 sprints (3 weken elk) gericht op het kritisch onderzoeken van de maatschappelijke impact van technologie. Hieronder staat samengevat wat ik concreet heb uitgevoerd en gerealiseerd binnen het project.
     </p>
-    <div class="sprints">
-      <div class="sprint">
-        <div class="sprint-num">01</div>
-        <h4>Onderzoek &amp; Concept</h4>
-        <ul>
-          <li>Parkeerscanauto's onderzocht</li>
-          <li>5 initiële concepten</li>
-          <li>3 samengevoegd tot eindproject</li>
+
+    <div class="dk-grid">
+      <div class="dk-card">
+        <h4>Analyseren</h4>
+        <p>Voor dit blok heb ik prototypes ontwikkeld voor eye-tracking software. Ik draaide een Python-library op localhost om tijdens de expositie te demonstreren dat de eye-tracking functionaliteit werkte.</p>
+        <p>Daarnaast heb ik een gebruikerstest uitgevoerd voor het script en de cubicle experience. De test bestond uit een introductie via het script, een enquête en een nabespreking over emoties en verbeterpunten. Concrete aanpassingen uit de test:</p>
+        <ul class="dk-list">
+          <li>Timer toegevoegd</li>
+          <li>Vragenlijst ingekort</li>
+          <li>Context in het script verduidelijkt</li>
         </ul>
       </div>
-      <div class="sprint">
-        <div class="sprint-num">02</div>
-        <h4>Prototyping</h4>
-        <ul>
-          <li>Cubicle constructie gestart</li>
-          <li>AI-component ontwikkeld</li>
-          <li>Visuele vormgeving kraampje</li>
-        </ul>
+
+      <div class="dk-card">
+        <h4>Adviseren</h4>
+        <p>Samen met Tibet maakte ik wireframes voor de website, met focus op de eindstaat die gebruikers zien na het doorlopen van alle stappen. Deze wireframes presenteerde ik aan de opdrachtgever en lichtte ontwerpkeuzes toe; het voorstel werd grotendeels goedgekeurd.</p>
       </div>
-      <div class="sprint">
-        <div class="sprint-num">03</div>
-        <h4>Iteratie</h4>
-        <ul>
-          <li>Cubicle afgerond</li>
-          <li>Feedback verwerkt</li>
-          <li>Ideaal script + survey site</li>
-        </ul>
+
+      <div class="dk-card">
+        <h4>Ontwerpen</h4>
+        <p>Aan het begin van het semester was richting onduidelijk. Ik werkte twee conceptvoorstellen uit: een AI-ombudsman (ethische evaluatie van gemeentelijke klachten) en gedragsherkenning voor ambtenaren (internationaal vergelijkend onderzoek). Beide voorstellen werden aanvankelijk afgewezen, maar onderdelen uit beide ideeën werden later meegenomen in de uiteindelijke richting van het project.</p>
       </div>
-      <div class="sprint">
-        <div class="sprint-num">04</div>
-        <h4>Integratie</h4>
-        <ul>
-          <li>Adviesrapport opgesteld</li>
-          <li>Alle onderdelen samengevoegd</li>
-          <li>Quality assurance + delivery</li>
-        </ul>
+
+      <div class="dk-card">
+        <h4>Realiseren</h4>
+        <p>Samen met Meroe (peer-coding) realiseerde ik mousetracking software die muiscoördinaten via JSON opslaat en deze omzet naar een heatmap met een canvas-element in HTML. De oplossing is getest door klasgenoten en functioneerde naar verwachting.</p>
+      </div>
+
+      <div class="dk-card">
+        <h4>Manage &amp; Control</h4>
+        <p>Het ontwikkelproces heb ik bijgehouden in GitLab: issueboard, branches en gestructureerde commits. Dit hielp bij documentatie van voortgang en het bewaken van codekwaliteit, mede gestimuleerd door docentfeedback.</p>
+      </div>
+
+      <div class="dk-card">
+        <h4>Persoonlijk Leiderschap</h4>
+        <p>Samen met Meroe gaf ik een seminar over de modernisatie van propaganda, gebaseerd op uitgebreid eigen onderzoek. De docent waardeerde dit met positieve feedback en een bovengemiddeld cijfer, wat tevens diende als reflectiemoment op mijn ontwikkeling.</p>
       </div>
     </div>
   </div>

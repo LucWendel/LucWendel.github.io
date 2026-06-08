@@ -17,6 +17,33 @@
     <link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,400&display=swap"
           rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css?family=Raleway:700&display=swap" rel="stylesheet"/>
+    <style>
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin: 0 auto;
+            max-width: 1200px;
+            padding: 1rem;
+        }
+        .gallery-grid img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            object-fit: contain;
+            background: #fff;
+        }
+        .gallery-section {
+            padding: 2rem 1rem;
+            background: #f9f9fb;
+        }
+        .gallery-section h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+    </style>
 
     <script src="../js/script-index.js"></script>
 </head>
@@ -160,6 +187,26 @@
 </section>
 
 <!-- END PROJECTS SECTION -->
+
+<section id="gallery" class="gallery-section">
+    <h2>Alle afbeeldingen uit img/bs</h2>
+    <div class="gallery-grid">
+        <img src="../img/bs/bid.png" alt="bid">
+        <img src="../img/bs/blok.png" alt="blok">
+        <img src="../img/bs/bol.png" alt="bol">
+        <img src="../img/bs/game.png" alt="game">
+        <img src="../img/bs/gits.png" alt="gits">
+        <img src="../img/bs/groen.png" alt="groen">
+        <img src="../img/bs/piet.png" alt="piet">
+        <img src="../img/bs/playPauseBtn.png" alt="playPauseBtn">
+        <img src="../img/bs/portrait.png" alt="portrait">
+        <img src="../img/bs/trekken.png" alt="trekken">
+        <img src="../img/bs/voetbal.png" alt="voetbal">
+        <img src="../img/bs/Wendel-logos_black.png" alt="Wendel logo black">
+        <img src="../img/bs/za.png" alt="za">
+        <img src="../img/bs/zal.png" alt="zal">
+    </div>
+</section>
 
 <!-- START CONTACT SECTION -->
 

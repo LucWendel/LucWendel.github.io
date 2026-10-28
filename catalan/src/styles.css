@@ -1,0 +1,78 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-heritage: var(--heritage);
+  --color-heritage-soft: var(--heritage-soft);
+  --color-med: var(--med);
+  --color-gold: var(--gold);
+  --color-sand: var(--sand);
+  --color-ink: var(--ink);
+
+  --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.04), 0 4px 16px oklch(0 0 0 / 0.04);
+  --shadow-lift: 0 10px 30px -12px oklch(0.35 0.13 22 / 0.25);
+}
+
+:root {
+  --radius: 0.875rem;
+
+  /* Catalan heritage palette */
+  --sand: oklch(0.975 0.012 70);            /* F8F5F2 warm paper */
+  --ink: oklch(0.22 0.02 260);              /* near-black slate */
+  --heritage: oklch(0.62 0.19 22);          /* D64045 senyera red */
+  --heritage-soft: oklch(0.62 0.19 22 / 0.08);
+  --med: oklch(0.45 0.11 245);              /* 1A5B92 Mediterranean blue */
+  --gold: oklch(0.85 0.16 88);              /* F9C22E saffron gold */
+
+  --background: var(--sand);
+  --foreground: var(--ink);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--ink);
+  --muted: oklch(0.96 0.006 70);
+  --muted-foreground: oklch(0.5 0.02 260);
+  --border: oklch(0 0 0 / 0.06);
+  --input: oklch(0 0 0 / 0.08);
+  --ring: var(--heritage);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
